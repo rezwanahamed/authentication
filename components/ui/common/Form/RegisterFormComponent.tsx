@@ -8,8 +8,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useObjectStore from "@/zustand/pageStatusCheckStore";
+import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ShieldAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
@@ -27,10 +30,15 @@ const formSchema = z.object({
   phone: z.string().min(7).max(20),
 });
 
+
 const RegisterFormComponent = () => {
+  const setValue = useObjectStore((state) => state.setValue);
+  const router = useRouter();
   const [errorMessages, setErrorMessages] = useState<
     Array<{ field: string; message: string }>
   >([]);
+
+  const { appendFormData, clearFormData } = useRegisterFormStore();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -57,6 +65,10 @@ const RegisterFormComponent = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.warn("Form submitted with values:", values);
+    clearFormData();
+    appendFormData(values);
+    setValue("user-additional-details-access", "true");
+    router.push("/user-additional-details");
     form.reset();
     setErrorMessages([]);
   }
@@ -72,7 +84,7 @@ const RegisterFormComponent = () => {
               <FormItem>
                 <FormLabel>First Name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input className="focus:border-blue-500" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -84,7 +96,7 @@ const RegisterFormComponent = () => {
               <FormItem>
                 <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input className="focus:border-blue-500" {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -96,7 +108,11 @@ const RegisterFormComponent = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input {...field} type="email" />
+                  <Input
+                    className="focus:border-blue-500"
+                    {...field}
+                    type="email"
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -115,7 +131,7 @@ const RegisterFormComponent = () => {
                     countryCallingCodeEditable={true}
                     value={field.value as string | undefined}
                     onChange={(value) => field.onChange(value || "")}
-                       className="input-phone flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-black ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="input-phone flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-black ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus:border-blue-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
                 </FormControl>
               </FormItem>

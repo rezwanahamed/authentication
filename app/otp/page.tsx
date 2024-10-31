@@ -1,7 +1,25 @@
+"use client";
+import { decryptData } from "@/lib/utils/cryptoUtils";
+import { usePostData } from "@/lib/utils/useApiPost";
 import { Asterisk } from "lucide-react";
+import { useEffect } from "react";
+import Cookies from "universal-cookie";
 import { OtpComponent } from "./components/OtpComponent";
 
 const Homepage = () => {
+  const { postData } = usePostData();
+  const cookies = new Cookies();
+
+  useEffect(() => {
+    const cookiesEncryptedValue = cookies.get("register_status");
+    console.warn(cookiesEncryptedValue);
+    if (cookiesEncryptedValue) {
+      const cookiesDecryptedData = decryptData(cookiesEncryptedValue as string);
+      console.warn(cookiesDecryptedData);
+      postData("/api/auth/send-email", {});
+    }
+  }, []);
+
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
       <div className="wrapper space-y-6">

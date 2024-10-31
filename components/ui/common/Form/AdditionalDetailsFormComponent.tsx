@@ -1,8 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import useObjectStore from "@/zustand/pageStatusCheckStore";
+import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ShieldAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,7 +18,10 @@ const formSchema = z.object({
 });
 
 const AdditionalDetailsFormComponent = () => {
+  const setValue = useObjectStore((state) => state.setValue);
   const [errorMessages, setErrorMessages] = useState([]);
+  const { appendFormData } = useRegisterFormStore();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,9 +46,12 @@ const AdditionalDetailsFormComponent = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.watch]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.warn("Form submitted with values:", values);
+    appendFormData(values);
     form.reset();
+    setValue("password-page-access", true);
+    router.push("/password");
     setErrorMessages([]);
   }
 

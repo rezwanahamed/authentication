@@ -1,10 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { encryptData } from "@/lib/utils/cryptoUtils";
+import { usePostData } from "@/lib/utils/useApiPost";
+import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ShieldAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import Cookies from "universal-cookie";
 import { z } from "zod";
 import zxcvbn from "zxcvbn";
 import { renderFormField } from "./RenderFormFieldComponent";
@@ -26,6 +32,11 @@ const formSchema = z
   });
 
 const PasswordComponent = () => {
+  const { postData } = usePostData();
+  const router = useRouter();
+  const cookies = new Cookies();
+
+  const { appendFormData, mergedData, clearFormData } = useRegisterFormStore();
   const [errorMessages, setErrorMessages] = useState<
     { field: string; message: string }[]
   >([]);
@@ -69,14 +80,46 @@ const PasswordComponent = () => {
       }
     });
     return () => subscription.unsubscribe();
-  }, [form, form.formState]);
+  }, [form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     console.warn("Form submitted with values:", values);
+    appendFormData(values);
+
     form.reset();
     setErrorMessages([]);
     setPasswordStrength(0);
     setPasswordFeedback("");
+
+    const dataToSend = { ...mergedData, password: values?.password };
+
+    try {
+      const response = await postData("/api/auth/register", dataToSend); // Use response directly
+      console.warn("============", response)
+      if (response?.status === 201) {
+        toast.success(
+          "Your account has been created successfully, check your email to verify your account",
+          {
+            position: "top-center",
+          },
+        );
+        console.warn(dataToSend?.email)
+        const encryptedPayloadData = encryptData(dataToSend?.email as string);
+        const payload = `{"register_status": "true", "email": "hello" "credential_type": "email" }`;
+        cookies.set("register_status", payload, { path: "/", maxAge: 300 });
+        router.push("/otp");
+      } else if (response?.status === 400) {
+        toast.error("User already exists", { position: "top-center" });
+      } else if (response?.status === 401) {
+        toast.error("This phone number is already used", {
+          position: "top-center",
+        });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Server error", { position: "top-center" });
+    } finally {
+      clearFormData();
+    }
   }
 
   const getStrengthColor = (strength: number) => {

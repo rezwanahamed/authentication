@@ -9,7 +9,7 @@ const RegisterPage = () => {
           <ShieldCheck className="h-6 w-6 text-blue-500" />
         </div>
         <div className="descriptions space-y-2">
-          <h2 className="font-geist text-xl font-medium">
+          <h2 className="font-geist text-xl font-medium text-white">
             Register to your profile
           </h2>
           <p className="w-full font-geist text-sm font-medium text-gray-400">

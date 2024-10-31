@@ -10,7 +10,7 @@ const Homepage = () => {
           <ShieldPlus className="h-6 w-6 text-blue-500" />
         </div>
         <div className="details">
-          <h1 className="text-center font-geist text-lg font-medium">
+          <h1 className="text-center font-geist text-lg font-medium text-white">
             Welcome to the authentication project.
           </h1>
           <p className="mt-2 text-center font-geist_mono text-sm text-gray-400">

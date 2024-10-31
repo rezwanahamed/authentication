@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,68 +9,56 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { usePostData } from "@/lib/utils/useApiPost";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ShieldAlert } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
+import { AxiosError } from "axios";
 
-const formSchema = z
-  .object({
-    firstName: z.string().min(2, {
-      message: "First name must be at least 2 characters long",
-    }),
-    lastName: z.string(),
-    email: z.string().email(),
-    age: z.number(),
-    phone: z.number(),
-    dateOfBirth: z.string().date(),
-    password: z.string().min(8).max(32),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+const formSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8).max(32),
+});
 
 const LoginFormComponent = () => {
-  const [errorMessages, setErrorMessages] = useState([]);
-
+  const { postData } = usePostData();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
       email: "",
-      age: 0,
-      phone: 0,
-      dateOfBirth: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
-  useEffect(() => {
-    const subscription = form.watch(() => {
-      const errors = Object.entries(form.formState.errors).map(
-        ([field, error]) => ({
-          field,
-          message: error.message,
-        }),
-      );
-      setErrorMessages(errors);
-    });
-    return () => subscription.unsubscribe();
-  }, [form.watch]);
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.warn("Form submitted with values:", values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     form.reset();
-    setErrorMessages([]);
+
+    try {
+      const response = await postData("/api/auth/login", values);
+      
+      if (response?.status === 200) {
+        toast.success("OTP generated successfully", {
+          position: "top-center",
+        });
+      }
+    } catch (err) {
+      const axiosError = err as AxiosError;
+      console.error("Full error object:", axiosError);
+
+      if (axiosError.response?.status === 401) {
+        toast.error("Invalid credentials", { position: "top-center" });
+      } else if (axiosError.response?.status === 403) {
+        toast.error("User not verified", { position: "top-center" });
+      } else {
+        toast.error(axiosError.message || "Server error", { position: "top-center" });
+      }
+    }
   }
 
   const renderFormField = (
-    name: string,
+    name: "email" | "password",
     label: string,
     type: string = "text",
   ) => (
@@ -78,11 +67,7 @@ const LoginFormComponent = () => {
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel
-            className={form.formState.errors[name] ? "text-red-500" : ""}
-          >
-            {label}
-          </FormLabel>
+          <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
               className={`border-gray-500 focus:border-blue-500 ${
@@ -101,9 +86,9 @@ const LoginFormComponent = () => {
     <div className="font-geist_mono">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {renderFormField("email", "Email", "password")}
+          {renderFormField("email", "Email", "email")}
           {renderFormField("password", "Password", "password")}
-
+          
           <Button
             className="w-full border border-blue-500 bg-blue-500 font-geist duration-300 hover:bg-transparent hover:text-blue-500"
             type="submit"
