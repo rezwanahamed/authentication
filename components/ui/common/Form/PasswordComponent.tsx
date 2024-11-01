@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { encryptData } from "@/lib/utils/cryptoUtils";
 import { usePostData } from "@/lib/utils/useApiPost";
 import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -95,7 +94,6 @@ const PasswordComponent = () => {
 
     try {
       const response = await postData("/api/auth/register", dataToSend); // Use response directly
-      console.warn("============", response)
       if (response?.status === 201) {
         toast.success(
           "Your account has been created successfully, check your email to verify your account",
@@ -103,20 +101,22 @@ const PasswordComponent = () => {
             position: "top-center",
           },
         );
-        console.warn(dataToSend?.email)
-        const encryptedPayloadData = encryptData(dataToSend?.email as string);
         const payload = `{"register_status": "true", "email": "hello" "credential_type": "email" }`;
         cookies.set("register_status", payload, { path: "/", maxAge: 300 });
         router.push("/otp");
-      } else if (response?.status === 400) {
+      }
+    } catch (error: any) {
+      if (error?.status === 400) {
         toast.error("User already exists", { position: "top-center" });
-      } else if (response?.status === 401) {
+      } else if (error?.status === 401) {
         toast.error("This phone number is already used", {
           position: "top-center",
         });
+      } else {
+        toast.error(error.message || "Server error", {
+          position: "top-center",
+        });
       }
-    } catch (err: any) {
-      toast.error(err.message || "Server error", { position: "top-center" });
     } finally {
       clearFormData();
     }

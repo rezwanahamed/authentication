@@ -12,7 +12,6 @@ const Homepage = () => {
 
   useEffect(() => {
     const cookiesEncryptedValue = cookies.get("register_status");
-    console.warn(cookiesEncryptedValue);
     if (cookiesEncryptedValue) {
       const cookiesDecryptedData = decryptData(cookiesEncryptedValue as string);
       console.warn(cookiesDecryptedData);

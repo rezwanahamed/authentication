@@ -5,12 +5,10 @@ import { envConfig } from '../lib/env';
 
 // Secret key for AES encryption (in a real app, use an environment variable)
 const SECRET_KEY = envConfig.ENCRYPTION_SECRET_KEY;
-console.warn('SECRET_KEY' , SECRET_KEY)
 
 
 // Encrypts a string using AES encryption
 export const encryptData = (str: string) => {
-  console.warn("lllll0", str)
   return CryptoJS.AES.encrypt(str, SECRET_KEY!)?.toString();
 };
 
