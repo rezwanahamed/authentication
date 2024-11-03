@@ -2,7 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
+import { Croissant, Key } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import DashboardQrDialog from "./QrDialog";
 
@@ -61,9 +63,27 @@ const RandomAvatar = ({
           <div className="location">Block-2/405, Liverpool, UK</div>
           <div className="type">User</div>
         </div>
-        <Button className="mt-4 border border-red-600 bg-red-600 font-geist_mono text-white duration-300 hover:bg-transparent hover:text-red-600">
-          Logout
-        </Button>
+        <div className="button-group grid grid-cols-2 gap-3">
+          <Link href={"/pass-key"}>
+            <Button className="mt-4 border w-full border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
+              <span>
+                <Key className="mr-2 w-4" />
+              </span>{" "}
+              Pass keys
+            </Button>
+          </Link>
+          <Link href={"/details"}>
+            <Button className="mt-4 border border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
+              <span>
+                <Croissant className="mr-2 w-4" />
+              </span>{" "}
+              Details card
+            </Button>
+          </Link>
+          <Button className="col-span-2 border border-red-600 bg-transparent font-geist_mono text-red-600 duration-300 hover:bg-red-600 hover:bg-transparent hover:text-white">
+            Logout
+          </Button>
+        </div>
       </div>
     </div>
   );
