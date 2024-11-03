@@ -47,7 +47,6 @@ const AdditionalDetailsFormComponent = () => {
   }, [form.watch]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.warn("Form submitted with values:", values);
     appendFormData(values);
     form.reset();
     setValue("password-page-access", true);

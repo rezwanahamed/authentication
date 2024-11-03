@@ -64,7 +64,6 @@ const RegisterFormComponent = () => {
   }, [form, form.formState.errors]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.warn("Form submitted with values:", values);
     clearFormData();
     appendFormData(values);
     setValue("user-additional-details-access", "true");

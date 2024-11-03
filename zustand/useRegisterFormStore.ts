@@ -19,8 +19,6 @@ const useRegisterFormStore = create<IRegisterFormStore>((set) => ({
     set((state) => {
       const newFormDataList = [...state.formDataList, data];
       const newMergedData = { ...state.mergedData, ...data };
-      console.warn("Updated formDataList:", newFormDataList);
-      console.warn("Updated mergedData:", newMergedData);
       return { 
         formDataList: newFormDataList,
         mergedData: newMergedData

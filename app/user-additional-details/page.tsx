@@ -1,21 +1,8 @@
 "use client";
 import AdditionalDetailsFormComponent from "@/components/ui/common/Form/AdditionalDetailsFormComponent";
-import useObjectStore from "@/zustand/pageStatusCheckStore";
 import { MapPinHouse } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 const UserAdditionalDetails = () => {
-  const getValue = useObjectStore((state) => state.getValue);
-  const router = useRouter()
-
-  useEffect(() => {
-    const canAccess = getValue("user-additional-details-access");
-    if (!canAccess) {
-      router.push('/register')
-      return;
-    }
-  }, []);
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
       <div className="wrapper space-y-6">

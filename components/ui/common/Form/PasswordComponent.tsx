@@ -9,10 +9,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import Cookies from "universal-cookie";
 import { z } from "zod";
 import zxcvbn from "zxcvbn";
 import { renderFormField } from "./RenderFormFieldComponent";
+import { encryptData } from "@/lib/utils/cryptoUtils";
 
 const formSchema = z
   .object({
@@ -33,7 +33,6 @@ const formSchema = z
 const PasswordComponent = () => {
   const { postData } = usePostData();
   const router = useRouter();
-  const cookies = new Cookies();
 
   const { appendFormData, mergedData, clearFormData } = useRegisterFormStore();
   const [errorMessages, setErrorMessages] = useState<
@@ -82,9 +81,7 @@ const PasswordComponent = () => {
   }, [form]);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.warn("Form submitted with values:", values);
     appendFormData(values);
-
     form.reset();
     setErrorMessages([]);
     setPasswordStrength(0);
@@ -101,17 +98,18 @@ const PasswordComponent = () => {
             position: "top-center",
           },
         );
-        const payload = `{"register_status": "true", "email": "hello" "credential_type": "email" }`;
-        cookies.set("register_status", payload, { path: "/", maxAge: 300 });
-        router.push("/otp");
+        const encrypt = encryptData(mergedData?.email as string);
+        router.push(`/registration-verification-otp/${encrypt}`);
       }
     } catch (error: any) {
       if (error?.status === 400) {
         toast.error("User already exists", { position: "top-center" });
+        router.push("/register");
       } else if (error?.status === 401) {
         toast.error("This phone number is already used", {
           position: "top-center",
         });
+        router.push("/register");
       } else {
         toast.error(error.message || "Server error", {
           position: "top-center",

@@ -8,13 +8,18 @@ import { usePostData } from "@/lib/utils/useApiPost";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import React, { useState, useCallback, useEffect } from "react";
 import { toast } from "sonner";
+import { useParams } from 'next/navigation'
+import { decryptData, encryptData } from "@/lib/utils/cryptoUtils";
 
 interface OtpComponentProps {
-  email: string;
+  email?: string;
   onVerificationSuccess?: () => void;
 }
 
 export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps) {
+  const params = useParams()
+  const decryptedEmail = decryptData(params?.id as string)
+
   const [otp, setOtp] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(40);
   const { postData, isLoading } = usePostData();
@@ -35,7 +40,7 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
   const handleSubmit = async (otpValue: string) => {
     try {
       const response = await postData("/api/auth/register-otp-verification", {
-        email: "redarclab@gmail.com",
+        email: decryptedEmail,
         otp: otpValue,
       });
 
@@ -90,7 +95,6 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
               key={index}
               index={index}
               className="h-[4rem] w-[4rem] border-gray-400 text-3xl focus:border-blue-500 focus:outline-none"
-              disabled={isLoading}
             />
           ))}
         </InputOTPGroup>
