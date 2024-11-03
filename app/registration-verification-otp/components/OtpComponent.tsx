@@ -75,11 +75,31 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
   }, [remainingTime]);
 
   // Resend OTP handler
-  const handleResendOtp = () => {
+  const handleResendOtp = async () => {
     // Reset timer and trigger OTP resend logic
     setRemainingTime(40);
     // Add your resend OTP API call here
+    try {
+      const response = await postData("/api/auth/generate-new-register-opt", {
+        email: decryptedEmail,
+      });
+
+      if (response?.status === 201) {
+        toast.success("New Opt has been send", {
+          position: "top-center",
+        });
+      }
+    } catch (error: any) {
+      const errorMessages = {
+        default: error.message || "Server error"
+      };
+      console.error(error)
+      toast.error(errorMessages[error?.status as keyof typeof errorMessages] || errorMessages.default, { 
+        position: "top-center" 
+      });
+    }
   };
+    
 
   return (
     <>
