@@ -4,21 +4,26 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { decryptData } from "@/lib/utils/cryptoUtils";
 import { usePostData } from "@/lib/utils/useApiPost";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
-import React, { useState, useCallback, useEffect } from "react";
+import { signIn } from "next-auth/react";
+import { useParams, useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useParams } from 'next/navigation'
-import { decryptData, encryptData } from "@/lib/utils/cryptoUtils";
 
 interface OtpComponentProps {
   email?: string;
   onVerificationSuccess?: () => void;
 }
 
-export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps) {
-  const params = useParams()
-  const decryptedEmail = decryptData(params?.id as string)
+export function OtpComponent({
+  email,
+  onVerificationSuccess,
+}: OtpComponentProps) {
+  const params = useParams();
+  const router = useRouter();
+  const decryptedEmail = decryptData(params?.id as string);
 
   const [otp, setOtp] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(40);
@@ -27,7 +32,7 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
   // Improved OTP change handler
   const handleOtpChange = useCallback((value: string) => {
     // Ensure only digits are entered
-    const sanitizedValue = value.replace(/[^0-9]/g, '');
+    const sanitizedValue = value.replace(/[^0-9]/g, "");
     setOtp(sanitizedValue);
 
     // Check if OTP is fully filled and trigger submission
@@ -43,31 +48,48 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
         email: decryptedEmail,
         otp: otpValue,
       });
-
       if (response?.status === 200) {
-        toast.success("OTP verification successful", {
-          position: "top-center",
+        // onVerificationSuccess?.();
+        const result = await signIn("credentials", {
+          redirect: false,
+          accessToken: response?.data?.accessToken,
+          refreshToken: response?.data?.refreshToken,
         });
-        onVerificationSuccess?.();
+        if (!result?.error) {
+          toast.success("Signed in successfully! 😍😍😍", {
+            position: "top-center",
+          });
+          router.push("/dashboard"); // Redirect to the dashboard page
+        } else {
+          toast.error("Sign-in failed. Please try again. ⚠️⚠️⚠️⚠️", {
+            position: "top-center",
+          });
+        }
       }
     } catch (error: any) {
       const errorMessages = {
         401: "Invalid OTP",
         400: "User not found",
-        default: error.message || "Server error"
+        default: error.message || "Server error",
       };
 
-      toast.error(errorMessages[error?.status as keyof typeof errorMessages] || errorMessages.default, { 
-        position: "top-center" 
-      });
+      toast.error(
+        errorMessages[error?.status as keyof typeof errorMessages] ||
+          errorMessages.default,
+        {
+          position: "top-center",
+        },
+      );
     }
   };
 
   // Resend OTP timer logic
   useEffect(() => {
-    const timer = remainingTime > 0 && setTimeout(() => {
-      setRemainingTime(prev => prev - 1);
-    }, 1000);
+    const timer =
+      remainingTime > 0 &&
+      setTimeout(() => {
+        setRemainingTime((prev) => prev - 1);
+      }, 1000);
 
     return () => {
       if (timer) clearTimeout(timer);
@@ -91,20 +113,23 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
       }
     } catch (error: any) {
       const errorMessages = {
-        default: error.message || "Server error"
+        default: error.message || "Server error",
       };
-      console.error(error)
-      toast.error(errorMessages[error?.status as keyof typeof errorMessages] || errorMessages.default, { 
-        position: "top-center" 
-      });
+      console.error(error);
+      toast.error(
+        errorMessages[error?.status as keyof typeof errorMessages] ||
+          errorMessages.default,
+        {
+          position: "top-center",
+        },
+      );
     }
   };
-    
 
   return (
     <>
-      <InputOTP 
-        maxLength={6} 
+      <InputOTP
+        maxLength={6}
         pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
         value={otp}
         onChange={handleOtpChange}
@@ -122,9 +147,11 @@ export function OtpComponent({ email, onVerificationSuccess }: OtpComponentProps
 
       <div className="otp-resend mt-6">
         {remainingTime > 0 ? (
-          <p className="font-geist_mono font-medium">Resent OTP in {remainingTime}s</p>
+          <p className="font-geist_mono font-medium">
+            Resent OTP in {remainingTime}s
+          </p>
         ) : (
-          <button 
+          <button
             onClick={handleResendOtp}
             className="font-geist_mono font-medium text-blue-500 hover:underline"
             disabled={isLoading}

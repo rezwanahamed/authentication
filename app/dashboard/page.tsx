@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Croissant, Key } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -41,6 +42,10 @@ const RandomAvatar = ({
     generateAvatar();
   }, [seed]); // Add size and seed to the dependency array
 
+  const handleLogout = async () => {
+    signOut();
+  };
+
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
       <div className="user-details">
@@ -65,7 +70,7 @@ const RandomAvatar = ({
         </div>
         <div className="button-group grid grid-cols-2 gap-3">
           <Link href={"/pass-key"}>
-            <Button className="mt-4 border w-full border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
+            <Button className="mt-4 w-full border border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
               <span>
                 <Key className="mr-2 w-4" />
               </span>{" "}
@@ -80,7 +85,7 @@ const RandomAvatar = ({
               Details card
             </Button>
           </Link>
-          <Button className="col-span-2 border border-red-600 bg-transparent font-geist_mono text-red-600 duration-300 hover:bg-red-600 hover:bg-transparent hover:text-white">
+          <Button onClick={handleLogout} className="col-span-2 border border-red-600 bg-transparent font-geist_mono text-red-600 duration-300 hover:bg-red-600 hover:text-white">
             Logout
           </Button>
         </div>
