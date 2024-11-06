@@ -1,34 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
-import { authSessionMiddleware } from "./middlewares/authSessionMiddleware";
-import { registerMiddleware } from "./middlewares/registerMiddleware";
-// import { authMiddleware } from './middlewares/authMiddleware';
+import { MiddlewareChain } from "./lib/utils/middlewareChain";
+import { authSessionMiddlewareConfig } from "./middlewares/authSessionMiddleware";
+import { registerMiddlewareConfig } from "./middlewares/registerMiddleware";
 
-export function middleware(request: NextRequest) {
-  // Run authMiddleware first
-  const sessionMiddlewareResponse = authSessionMiddleware(request);
-  if (sessionMiddlewareResponse) {
-    return sessionMiddlewareResponse; // Stop if authMiddleware returns a response
-  }
+const middlewareChain = new MiddlewareChain();
+middlewareChain.add(authSessionMiddlewareConfig).add(registerMiddlewareConfig)
 
-  // Run registerMiddleware next
-  const registerResponse = registerMiddleware(request);
-  if (registerResponse) {
-    return registerResponse; // Stop if registerMiddleware returns a response
-  }
-
-  // If neither middleware returned a response, proceed
-  return NextResponse.next();
+export async function middleware(request: NextRequest) {
+  return middlewareChain.execute(request);
 }
 
 // Configure which paths this middleware will run on (combined from both configs)
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/details/:path*",
-    "/register",
-    "/user-additional-details",
-    "/password",
-    "/otp",
-  ],
+  matcher:
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
 };

@@ -15,7 +15,15 @@ export async function authSessionMiddleware(request: NextRequest) {
 
   // Define public paths that don't require authentication
   const privatePaths = ["/details", "/dashboard"];
+  const restrictedPaths = [
+    "/login",
+    "/register",
+    "/registration-verification-otp/",
+    "/password",
+    "/user-additional-details",
+  ];
   const isPrivatePath = privatePaths.includes(path);
+  const isRestrictedPath = restrictedPaths.includes(path);
 
   try {
     // Get the token from the request using next-auth
@@ -29,6 +37,10 @@ export async function authSessionMiddleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
+    if (isRestrictedPath && session?.accessToken) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
     return NextResponse.next();
   } catch (error) {
     console.error("Middleware error:", error);
@@ -36,6 +48,16 @@ export async function authSessionMiddleware(request: NextRequest) {
   }
 }
 
-export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+export const authSessionMiddlewareConfig = {
+  matcher: [
+    "/details",
+    "/dashboard",
+    "/pass-key",
+    "/login",
+    "/register",
+    "/registration-verification-otp/",
+    "/password",
+    "/user-additional-details",
+  ],
+  handler: authSessionMiddleware,
 };
