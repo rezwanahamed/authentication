@@ -54,6 +54,8 @@ export function OtpComponent({
           redirect: false,
           accessToken: response?.data?.accessToken,
           refreshToken: response?.data?.refreshToken,
+          userId: response?.data?.user?.id,
+          email: response?.data?.user.email,
         });
         if (!result?.error) {
           toast.success("Signed in successfully! 😍😍😍", {

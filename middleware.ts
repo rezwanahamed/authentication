@@ -1,13 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-import { registerMiddleware } from './middlewares/registerMiddleware';
-import { authMiddleware } from './middlewares/authMiddleware';
+import { authSessionMiddleware } from "./middlewares/authSessionMiddleware";
+import { registerMiddleware } from "./middlewares/registerMiddleware";
+// import { authMiddleware } from './middlewares/authMiddleware';
 
 export function middleware(request: NextRequest) {
   // Run authMiddleware first
-  const authResponse = authMiddleware(request);
-  if (authResponse) {
-    return authResponse; // Stop if authMiddleware returns a response
+  const sessionMiddlewareResponse = authSessionMiddleware(request);
+  if (sessionMiddlewareResponse) {
+    return sessionMiddlewareResponse; // Stop if authMiddleware returns a response
   }
 
   // Run registerMiddleware next
@@ -23,11 +24,11 @@ export function middleware(request: NextRequest) {
 // Configure which paths this middleware will run on (combined from both configs)
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/details/:path*',
-    '/register',
-    '/user-additional-details',
-    '/password',
-    '/otp'
+    "/dashboard/:path*",
+    "/details/:path*",
+    "/register",
+    "/user-additional-details",
+    "/password",
+    "/otp",
   ],
 };

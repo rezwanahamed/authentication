@@ -1,10 +1,11 @@
-import 'next-auth';
+import "next-auth";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session {
     user: {
-      id: string;
-      email: string;
+      userId: string;
+      email: string ;
+      userRole?: string;
     };
     accessToken: string;
     refreshToken: string;
@@ -12,21 +13,23 @@ declare module 'next-auth' {
   }
 
   interface User {
-    id: string;
+    userId: string;
     email: string;
+    userRole?: string;
     accessToken: string;
     refreshToken: string;
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT {
     accessToken: string;
     refreshToken: string;
     accessTokenExpires: number;
     user: {
-      id: string;
+      userId: string;
       email: string;
+      userRole?: string;
     };
     error?: string;
   }

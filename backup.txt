@@ -1,0 +1,48 @@
+import { NextResponse } from 'next/server';
+import { withAuth } from 'next-auth/middleware';
+import type { NextRequestWithAuth } from 'next-auth/middleware';
+
+export function authMiddleware(request: NextRequestWithAuth) {
+  return withAuth(request, {
+    callbacks: {
+      authorized: ({ token }) => {
+        return !!token?.accessToken;
+      },
+    },
+    pages: {
+      signIn: '/login',
+      error: '/auth/error',
+    },
+  });
+}
+
+
+////////////////////////////////
+
+// authMiddleware.ts
+import { withAuth } from "next-auth/middleware";
+import { NextResponse } from "next/server";
+
+const protectedRoutes = ["/dashboard", "/details"];
+
+export default withAuth(
+  function middleware(req) {
+    const { pathname } = req.nextUrl;
+
+    if (protectedRoutes.includes(pathname) && !req.nextauth.token) {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
+
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+  }
+);
+
+// Export config for matching protected routes
+export const config = {
+  matcher: ["/dashboard", "/details"],
+};

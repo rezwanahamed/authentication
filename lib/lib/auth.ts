@@ -5,15 +5,18 @@ import { envConfig } from "./env";
 
 async function refreshAccessToken(token: JWT) {
   try {
-    const response = await fetch(envConfig.BACKEND_SERVER_URL+"/api/auth/refresh-token/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      envConfig.BACKEND_SERVER_URL + "/api/auth/refresh-token/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshToken: token.refreshToken,
+        }),
       },
-      body: JSON.stringify({
-        refreshToken: token.refreshToken,
-      }),
-    });
+    );
 
     const refreshedTokens = await response.json();
 
@@ -43,15 +46,20 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         accessToken: { label: "Access Token", type: "text" },
         refreshToken: { label: "Refresh Token", type: "text" },
+        userId: { label: "User ID", type: "text" },
+        email: { label: "Email", type: "text" },
+        userRole: { label: "User Role", type: "text" },
       },
       async authorize(credentials) {
         try {
           if (credentials?.accessToken && credentials?.refreshToken) {
-            // Return the tokens received after OTP verification
             return {
-              id: "user-id", // You might want to decode this from JWT if available
+              id: credentials.userId,
               accessToken: credentials.accessToken,
               refreshToken: credentials.refreshToken,
+              userId: credentials.userId,
+              email: credentials.email,
+              userRole: credentials.userRole,
             };
           }
           return null;
@@ -65,23 +73,31 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // This will only be executed when tokens are first received
+        // Store initial user data and tokens
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
         token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+        token.userId = user.userId;
+        token.email = user.email;
+        token.userRole = user.userRole;
       }
 
-      // Return previous token if access token has not expired
+      // Return existing token if access token has not expired
       if (Date.now() < (token.accessTokenExpires as number)) {
         return token;
       }
 
-      // Access token expired, try to refresh it
+      // Access token expired, refresh it
       return await refreshAccessToken(token);
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
+      session.user = {
+        id: token.userId,
+        email: token.email,
+        role: token.userRole,
+      };
       session.error = token.error;
       return session;
     },
