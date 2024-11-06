@@ -15,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { encryptData } from "@/lib/utils/cryptoUtils";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -23,6 +25,7 @@ const formSchema = z.object({
 
 const LoginFormComponent = () => {
   const { postData } = usePostData();
+  const router = useRouter()
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,9 +42,8 @@ const LoginFormComponent = () => {
       const response = await postData("/api/auth/login", values);
       
       if (response?.status === 200) {
-        toast.success("OTP generated successfully", {
-          position: "top-center",
-        });
+        const encrypt = encryptData(values?.email as string);
+        router.push(`/login-verification/${encrypt}`);
       }
     } catch (err) {
       const axiosError = err as AxiosError;

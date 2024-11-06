@@ -6,18 +6,17 @@ type PageOrder = {
 };
 
 const pageOrder: PageOrder = {
-  register: 1,
-  "user-additional-details": 2,
-  password: 3,
-  otp: 4,
+  login: 1,
+  "login-verification": 2,
 };
 
-export function registerMiddleware(request: NextRequest) {
+export function loginMiddleware(request: NextRequest) {
+  console.log("login middleware is running ⚠️⚠️⚠️⚠️");
   const path = request.nextUrl.pathname;
   const currentPage = path.split("/")[1];
 
   // If accessing the register page, allow access
-  if (currentPage === "register") {
+  if (currentPage === "login") {
     return NextResponse.next();
   }
 
@@ -26,7 +25,7 @@ export function registerMiddleware(request: NextRequest) {
 
   if (!referer) {
     // If no referer, redirect to register
-    const redirectUrl = new URL("/register", request.url);
+    const redirectUrl = new URL("/login", request.url);
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -55,7 +54,7 @@ export function registerMiddleware(request: NextRequest) {
 }
 
 // Configure which paths this middleware will run on
-export const registerMiddlewareConfig = {
-  matcher: ["/register", "/user-additional-details", "/password"],
-  handler: registerMiddleware,
+export const loginMiddlewareConfig = {
+  matcher: ["/login", "/login-verification"],
+  handler: loginMiddleware,
 };

@@ -3,9 +3,10 @@ import { NextRequest } from "next/server";
 import { MiddlewareChain } from "./lib/utils/middlewareChain";
 import { authSessionMiddlewareConfig } from "./middlewares/authSessionMiddleware";
 import { registerMiddlewareConfig } from "./middlewares/registerMiddleware";
+import { loginMiddlewareConfig } from "./middlewares/loginMiddleware";
 
 const middlewareChain = new MiddlewareChain();
-middlewareChain.add(authSessionMiddlewareConfig).add(registerMiddlewareConfig)
+middlewareChain.add(loginMiddlewareConfig).add(authSessionMiddlewareConfig).add(registerMiddlewareConfig)
 
 export async function middleware(request: NextRequest) {
   return middlewareChain.execute(request);
