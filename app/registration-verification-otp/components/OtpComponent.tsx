@@ -23,8 +23,7 @@ export function OtpComponent({
 }: OtpComponentProps) {
   const params = useParams();
   const router = useRouter();
-  const decryptedEmail = decryptData(params?.id as any);
-  console.log(decryptedEmail as string)
+  const decryptedData = decryptData(params?.id as string);
 
   const [otp, setOtp] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(40);
@@ -42,47 +41,92 @@ export function OtpComponent({
     }
   }, []);
 
+  console.log(decryptedData.email)
+
   // Handle OTP submission
   const handleSubmit = async (otpValue: string) => {
-    try {
-      const response = await postData("/api/auth/register-otp-verification", {
-        email: decryptedEmail,
-        otp: otpValue,
-      });
-      if (response?.status === 200) {
-        // onVerificationSuccess?.();
-        const result = await signIn("credentials", {
-          redirect: false,
-          accessToken: response?.data?.accessToken,
-          refreshToken: response?.data?.refreshToken,
-          userId: response?.data?.user?.id,
-          email: response?.data?.user.email,
+    if (decryptedData?.page === "login-verification") {
+      try {
+        const response = await postData("/api/auth/login-otp-verification", {
+          email: decryptedData?.email,
+          otp: otpValue,
         });
-        if (!result?.error) {
-          toast.success("Signed in successfully! 😍😍😍", {
-            position: "top-center",
+        if (response?.status === 200) {
+          // onVerificationSuccess?.();
+          const result = await signIn("credentials", {
+            redirect: false,
+            accessToken: response?.data?.accessToken,
+            refreshToken: response?.data?.refreshToken,
+            userId: response?.data?.user?.id,
+            email: response?.data?.user.email,
           });
-          router.push("/dashboard"); // Redirect to the dashboard page
-        } else {
-          toast.error("Sign-in failed. Please try again. ⚠️⚠️⚠️⚠️", {
-            position: "top-center",
-          });
+          if (!result?.error) {
+            toast.success("Signed in successfully! 😍😍😍", {
+              position: "top-center",
+            });
+            router.push("/dashboard"); // Redirect to the dashboard page
+          } else {
+            toast.error("Sign-in failed. Please try again. ⚠️⚠️⚠️⚠️", {
+              position: "top-center",
+            });
+          }
         }
-      }
-    } catch (error: any) {
-      const errorMessages = {
-        401: "Invalid OTP",
-        400: "User not found",
-        default: error.message || "Server error",
-      };
+      } catch (error: any) {
+        const errorMessages = {
+          401: "Invalid OTP",
+          400: "User not found",
+          default: error.message || "Server error",
+        };
 
-      toast.error(
-        errorMessages[error?.status as keyof typeof errorMessages] ||
-          errorMessages.default,
-        {
-          position: "top-center",
-        },
-      );
+        toast.error(
+          errorMessages[error?.status as keyof typeof errorMessages] ||
+            errorMessages.default,
+          {
+            position: "top-center",
+          },
+        );
+      }
+    } else {
+      try {
+        const response = await postData("/api/auth/register-otp-verification", {
+          email: decryptedData,
+          otp: otpValue,
+        });
+        if (response?.status === 200) {
+          // onVerificationSuccess?.();
+          const result = await signIn("credentials", {
+            redirect: false,
+            accessToken: response?.data?.accessToken,
+            refreshToken: response?.data?.refreshToken,
+            userId: response?.data?.user?.id,
+            email: response?.data?.user.email,
+          });
+          if (!result?.error) {
+            toast.success("Signed in successfully! 😍😍😍", {
+              position: "top-center",
+            });
+            router.push("/dashboard"); // Redirect to the dashboard page
+          } else {
+            toast.error("Sign-in failed. Please try again. ⚠️⚠️⚠️⚠️", {
+              position: "top-center",
+            });
+          }
+        }
+      } catch (error: any) {
+        const errorMessages = {
+          401: "Invalid OTP",
+          400: "User not found",
+          default: error.message || "Server error",
+        };
+
+        toast.error(
+          errorMessages[error?.status as keyof typeof errorMessages] ||
+            errorMessages.default,
+          {
+            position: "top-center",
+          },
+        );
+      }
     }
   };
 
@@ -106,7 +150,7 @@ export function OtpComponent({
     // Add your resend OTP API call here
     try {
       const response = await postData("/api/auth/generate-new-register-opt", {
-        email: decryptedEmail,
+        email: decryptedData?.email
       });
 
       if (response?.status === 201) {

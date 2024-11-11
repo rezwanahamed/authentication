@@ -1,5 +1,5 @@
 "use client";
-import { decryptData } from "@/lib/utils/cryptoUtils";
+import { decryptData, encryptData } from "@/lib/utils/cryptoUtils";
 import { usePostData } from "@/lib/utils/useApiPost";
 import { Key, Mail, Smartphone, Sticker } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -8,19 +8,25 @@ const Homepage = () => {
   const params = useParams();
   const router = useRouter();
   const decryptedEmail = decryptData(params?.id as string);
+  console.warn(decryptedEmail)
 
   const { postData } = usePostData();
 
   const onClickHandler = async (type: string) => {
     if (type === "email") {
       console.warn("============== email");
+      const payload = {
+        email: decryptedEmail,
+        page: "login-verification",
+      };
+      const encryptPayload = encryptData(payload);
       try {
         const response = await postData("/api/auth/generate-login-otp", {
           credential: decryptedEmail,
           credentialType: "email",
         });
         if (response?.status === 200) {
-          router.push(`/otp/${decryptedEmail}`);
+          router.push(`/otp/${encryptPayload}`);
         }
       } catch (err) {
         console.error(err);
@@ -29,14 +35,15 @@ const Homepage = () => {
     }
     if (type === "phone") {
       console.warn("============== phone");
+      router.push(`/otp/${decryptedEmail}`);
       try {
-        const response = await postData("/api/auth/generate-login-otp", {
-          credential: decryptedEmail,
-          credentialType: "phone",
-        });
-        if (response?.status === 200) {
-          router.push(`/otp/${decryptedEmail}`);
-        }
+        // const response = await postData("/api/auth/generate-login-otp", {
+        //   credential: decryptedEmail,
+        //   credentialType: "phone",
+        // });
+        // if (response?.status === 200) {
+        //   router.push(`/otp/${decryptedEmail}`);
+        // }
       } catch (err) {
         console.error(err);
       }
