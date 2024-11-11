@@ -43,7 +43,7 @@ const Homepage = () => {
       return;
     }
     if (type === "passkey") {
-      console.warn("============== passkey");
+      router.push(`/pass-key-verification/${params?.id}`);
       return;
     }
   };

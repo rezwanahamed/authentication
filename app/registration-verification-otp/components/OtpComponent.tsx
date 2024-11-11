@@ -23,7 +23,8 @@ export function OtpComponent({
 }: OtpComponentProps) {
   const params = useParams();
   const router = useRouter();
-  const decryptedEmail = decryptData(params?.id as string);
+  const decryptedEmail = decryptData(params?.id as any);
+  console.log(decryptedEmail as string)
 
   const [otp, setOtp] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(40);
