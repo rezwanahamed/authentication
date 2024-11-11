@@ -11,7 +11,6 @@ const pageOrder: PageOrder = {
 };
 
 export function loginMiddleware(request: NextRequest) {
-  console.log("login middleware is running ⚠️⚠️⚠️⚠️");
   const path = request.nextUrl.pathname;
   const currentPage = path.split("/")[1];
 

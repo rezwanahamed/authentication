@@ -8,13 +8,11 @@ const Homepage = () => {
   const params = useParams();
   const router = useRouter();
   const decryptedEmail = decryptData(params?.id as string);
-  console.warn(decryptedEmail)
 
   const { postData } = usePostData();
 
   const onClickHandler = async (type: string) => {
     if (type === "email") {
-      console.warn("============== email");
       const payload = {
         email: decryptedEmail,
         page: "login-verification",
@@ -34,7 +32,6 @@ const Homepage = () => {
       return;
     }
     if (type === "phone") {
-      console.warn("============== phone");
       router.push(`/otp/${decryptedEmail}`);
       try {
         // const response = await postData("/api/auth/generate-login-otp", {

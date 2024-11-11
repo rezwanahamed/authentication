@@ -12,6 +12,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
+
+
 interface OtpComponentProps {
   email?: string;
   onVerificationSuccess?: () => void;
@@ -23,7 +25,7 @@ export function OtpComponent({
 }: OtpComponentProps) {
   const params = useParams();
   const router = useRouter();
-  const decryptedData = decryptData(params?.id as string);
+  const decryptedData = decryptData(params?.id);
 
   const [otp, setOtp] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(40);
@@ -40,8 +42,6 @@ export function OtpComponent({
       handleSubmit(sanitizedValue);
     }
   }, []);
-
-  console.log(decryptedData.email)
 
   // Handle OTP submission
   const handleSubmit = async (otpValue: string) => {
@@ -150,7 +150,7 @@ export function OtpComponent({
     // Add your resend OTP API call here
     try {
       const response = await postData("/api/auth/generate-new-register-opt", {
-        email: decryptedData?.email
+        email: decryptedData?.email,
       });
 
       if (response?.status === 201) {

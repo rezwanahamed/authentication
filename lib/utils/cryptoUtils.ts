@@ -28,7 +28,7 @@ export const encryptData = (data: any): string => {
 };
 
 // Decrypts a URL-safe encrypted string
-export const decryptData = (data: any): string | null => {
+export const decryptData = (data: any): any | null => {
   if (!data) return null;
   if (!SECRET_KEY) {
     console.error("SECRET_KEY is not defined.");
