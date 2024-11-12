@@ -6,10 +6,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { IFetchUserData } from "@/types/interface";
 import { QrCode } from "lucide-react";
 import QRCode from "react-qr-code";
 
-const DashboardQrDialog = () => {
+const DashboardQrDialog = ({ qrValue }: { qrValue: IFetchUserData }) => {
+  console.warn("from qr component: ", qrValue);
   return (
     <div>
       <Dialog>
@@ -34,9 +36,7 @@ const DashboardQrDialog = () => {
               <QRCode
                 size={256}
                 style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-                value={
-                  "sdsasdjkaskjlfasjkldklj;askdlasl;kdakls;dl;ksakl;dsakl;dsakl;adskl;dsakl;"
-                }
+                value={`${qrValue?.firstName} ${qrValue?.lastName} ${qrValue?.email} ${qrValue?._id}`}
                 viewBox={`0 0 256 256`}
               />
             </div>

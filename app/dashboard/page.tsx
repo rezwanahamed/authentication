@@ -4,19 +4,18 @@ import { fetchData } from "@/lib/utils/useApiGet";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Croissant, Key } from "lucide-react";
+import moment from "moment";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DashboardQrDialog from "./QrDialog";
+import { IFetchUserData } from "@/types/interface";
 
-const RandomAvatar = ({
-  seed,
-}: {
-  seed?: number | string; // Make seed optional
-}) => {
+
+const RandomAvatar = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState<IFetchUserData>();
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -24,12 +23,11 @@ const RandomAvatar = ({
         const response = await fetchData(
           "/api/authorize-user/user-dashboard-data/",
         );
-        console.warn(response);
         setUserData(response);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
-    }
+    };
 
     fetchedData();
   }, []);
@@ -38,10 +36,7 @@ const RandomAvatar = ({
     const generateAvatar = async () => {
       try {
         // Use the provided seed or generate a random one if not provided
-        const avatarSeed =
-          seed !== undefined
-            ? seed
-            : Math.random().toString(36).substring(2, 15);
+        const avatarSeed = userData?._id;
 
         const avatar = createAvatar(loreleiNeutral, {
           seed: avatarSeed as string,
@@ -58,15 +53,14 @@ const RandomAvatar = ({
     };
 
     generateAvatar();
-  }, [seed]); // Add size and seed to the dependency array
-
-
-
-  console.warn("********************* userData: ", userData);
+  }, [userData]); // Add size and seed to the dependency array
 
   const handleLogout = async () => {
     signOut();
   };
+
+  const now = moment();
+  const formatted = now.format("YYYY-MM-DD");
 
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
@@ -79,15 +73,21 @@ const RandomAvatar = ({
             width={500}
             height={500}
           />
-          <DashboardQrDialog />
+          <DashboardQrDialog qrValue={userData as IFetchUserData} />
         </div>
         <div className="user-details mt-4 space-y-1 font-geist_mono">
-          <div className="name">Rezwan Ahamed</div>
-          <div className="email">rezwanahamed85@gmail.com</div>
-          <div className="age">22</div>
-          <div className="date-of-birth">04-06-2002</div>
-          <div className="phone">+8801725282740</div>
-          <div className="location">Block-2/405, Liverpool, UK</div>
+          <div className="name">
+            {userData?.firstName} {userData?.lastName}
+          </div>
+          <div className="email">{userData?.email}</div>
+          <div className="age">{userData?.age}</div>
+          <div className="date-of-birth">
+            {userData?.dateOfBirth
+              ? moment(userData.dateOfBirth).format("MMMM D, YYYY")
+              : ""}
+          </div>
+          <div className="phone">{userData?.phone}</div>
+          <div className="location">{userData?.address}</div>
           <div className="type">User</div>
         </div>
         <div className="button-group grid grid-cols-2 gap-3">
