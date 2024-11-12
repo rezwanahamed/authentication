@@ -91,7 +91,7 @@ const RandomAvatar = () => {
           <div className="type">User</div>
         </div>
         <div className="button-group grid grid-cols-2 gap-3">
-          <Link href={"/pass-key"}>
+          <Link href={"/passkey"}>
             <Button className="mt-4 w-full border border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
               <span>
                 <Key className="mr-2 w-4" />

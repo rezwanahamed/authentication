@@ -14,11 +14,12 @@ export async function authSessionMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Define public paths that don't require authentication
-  const privatePaths = ["/details", "/dashboard"];
+  const privatePaths = ["/details", "/passkey", "/dashboard"];
   const restrictedPaths = [
     "/login",
     "/register",
-    "/registration-verification-otp/",
+    "/otp",
+    "/registration-verification-otp",
     "/password",
     "/user-additional-details",
   ];
@@ -26,7 +27,6 @@ export async function authSessionMiddleware(request: NextRequest) {
   const isRestrictedPath = restrictedPaths.includes(path);
 
   try {
-    // Get the token from the request using next-auth
     const session = (await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
@@ -52,10 +52,11 @@ export const authSessionMiddlewareConfig = {
   matcher: [
     "/details",
     "/dashboard",
-    "/pass-key",
+    "/passkey",
     "/login",
     "/register",
-    "/registration-verification-otp/",
+    "/registration-verification-otp",
+    "/otp",
     "/password",
     "/user-additional-details",
   ],

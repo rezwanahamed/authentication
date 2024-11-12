@@ -11,3 +11,31 @@ export interface IFetchUserData {
     password: string;
   }
   
+
+// Interface for a User object
+interface IPasskeyUser {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    age: number;
+    address: string;
+    dateOfBirth: string; // ISO string format for Date
+    password: string;
+    verified: boolean;
+    createdAt: string; // ISO string format for Date
+    updatedAt: string; // ISO string format for Date
+    __v: number;
+}
+
+// Interface for a Passkey object
+export interface IPasskey {
+    passkey: string;
+}
+
+// Interface to hold the User and their Passkeys
+export interface IUserPassKeysResponse {
+    user: IPasskeyUser;
+    passkeys: IPasskey[];
+}
