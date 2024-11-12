@@ -2,17 +2,19 @@
 import { Button } from "@/components/ui/button";
 import { fetchData } from "@/lib/utils/useApiGet";
 import { IPasskey, IUserPassKeysResponse } from "@/types/interface";
-import { Sticker } from "lucide-react";
+import { RotateCw, Sticker } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import QrDialog from "./QrDialog";
 
 const Homepage = () => {
   const [userData, setUserData] = useState<IUserPassKeysResponse>();
+  const [passkeys, setPasskeys] = useState<IPasskey[]>([]);
 
   useEffect(() => {
     const fetchedData = async () => {
       try {
-        const response = await fetchData("/api/authorize-user//user-passkey");
+        const response = await fetchData("/api/authorize-user/user-passkey");
         setUserData(response);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -20,9 +22,23 @@ const Homepage = () => {
     };
 
     fetchedData();
-  }, []);
+  }, [passkeys, userData]);
 
-  console.warn("******************* ", userData);
+  const handleGeneratePasskeys = async () => {
+    try {
+      const response = await fetchData(
+        "/api/authorize-user/generate-new-passkeys",
+      );
+      if (response) {
+        toast.success("New passkeys generated", {
+          position: "top-center",
+        });
+        setPasskeys(response);
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
@@ -44,15 +60,25 @@ const Homepage = () => {
           <div className="pass-key">
             <h2 className="font-geist">Passkeys </h2>
             <ul className="mt-2 space-y-1 font-geist_mono">
-              {userData?.passkeys?.map((passkey, index) => (
-                <li key={index}>{passkey?.passkey}</li>
-              ))}
+              {passkeys && passkeys.length > 0
+                ? passkeys.map((passkey, index) => (
+                    <li key={index}>{passkey?.passkey}</li>
+                  ))
+                : userData?.passkeys?.map((passkey, index) => (
+                    <li key={index}>{passkey?.passkey}</li>
+                  ))}
             </ul>
             <div className="button-group mt-4 flex items-center gap-3">
               <Button className="bg-blue-500 font-geist_mono">
                 Copy passkey
               </Button>
               <QrDialog passkeys={userData?.passkeys as IPasskey[]} />
+              <button
+                onClick={() => handleGeneratePasskeys()}
+                className="qr-button flex h-10 justify-center rounded bg-[#233856] p-2 text-blue-500"
+              >
+                <RotateCw />
+              </button>
             </div>
           </div>
         </div>

@@ -10,7 +10,6 @@ export async function authSessionMiddleware(request: NextRequest) {
   // Define public paths that don't require authentication
   const privatePaths = ["/details", "/passkey", "/dashboard"];
   const restrictedPaths = [
-    "/login",
     "/register",
     "/otp",
     "/registration-verification-otp",
@@ -47,7 +46,6 @@ export const authSessionMiddlewareConfig = {
     "/details",
     "/dashboard",
     "/passkey",
-    "/login",
     "/register",
     "/registration-verification-otp",
     "/otp",
