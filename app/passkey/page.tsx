@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { fetchData } from "@/lib/utils/useApiGet";
 import { IPasskey, IUserPassKeysResponse } from "@/types/interface";
-import { RotateCw, Sticker } from "lucide-react";
+import { RotateCw, Sticker, Copy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import QrDialog from "./QrDialog";
@@ -40,6 +40,27 @@ const Homepage = () => {
     }
   };
 
+  const handleCopyPasskeys = () => {
+    const passkeysToDisplay = passkeys.length > 0 
+      ? passkeys.map(pk => pk.passkey).join('\n')
+      : userData?.passkeys?.map(pk => pk.passkey).join('\n');
+
+    if (passkeysToDisplay) {
+      navigator.clipboard.writeText(passkeysToDisplay)
+        .then(() => {
+          toast.success("Passkeys copied to clipboard", {
+            position: "top-center",
+          });
+        })
+        .catch((error) => {
+          console.error("Failed to copy passkeys:", error);
+          toast.error("Failed to copy passkeys", {
+            position: "top-center",
+          });
+        });
+    }
+  };
+
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
       <div className="wrapper space-y-6">
@@ -48,10 +69,10 @@ const Homepage = () => {
         </div>
         <div className="descriptions space-y-2">
           <h2 className="font-geist text-xl font-medium">
-            Your account recovery derails
+            Your account recovery details
           </h2>
           <p className="w-full font-geist text-sm font-medium text-gray-400">
-            Pease do not share your account credentials with others. Use passkey
+            Please do not share your account credentials with others. Use passkey
             to recover your account.
           </p>
         </div>
@@ -69,7 +90,11 @@ const Homepage = () => {
                   ))}
             </ul>
             <div className="button-group mt-4 flex items-center gap-3">
-              <Button className="bg-blue-500 font-geist_mono">
+              <Button 
+                onClick={handleCopyPasskeys}
+                className="bg-blue-500 font-geist_mono flex items-center gap-2"
+              >
+                <Copy className="h-4 w-4" />
                 Copy passkey
               </Button>
               <QrDialog passkeys={userData?.passkeys as IPasskey[]} />
