@@ -1,20 +1,19 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { ShieldPlus } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useSession } from "next-auth/react"
 
 const Homepage = () => {
-
-  const { data: session } = useSession()
-console.warn(session)
+  const { data: session } = useSession();
+  console.warn(session);
   if (session) {
     // Access your stored data
-    console.warn(session.accessToken)
-    console.warn(session.user)
+    console.warn(session.accessToken);
+    console.warn(session.user);
     // Any other custom data you added
   }
-  
+
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
       <div className="wrapper flex w-full flex-col items-center justify-center space-y-6">
@@ -31,9 +30,15 @@ console.warn(session)
           </p>
         </div>
         <div className="button-group flex gap-4 pt-4">
-          <Button className="rounded-full bg-blue-500 p-6 font-geist_mono">
-            Read doc
-          </Button>
+          <a
+            href="https://protfolio2024.vercel.app/projects/opensource"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="rounded-full bg-blue-500 p-6 font-geist_mono">
+              Read doc
+            </Button>
+          </a>
           <Link href={"/register"}>
             <Button className="rounded-full bg-white p-6 font-geist_mono font-semibold text-black hover:text-white">
               Try it out

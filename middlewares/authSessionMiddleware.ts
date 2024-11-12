@@ -1,14 +1,8 @@
+import { ICustomSession } from "@/types/interface";
 import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
 
-interface CustomSession {
-  user?: {
-    id?: string | null;
-    email?: string | null;
-  };
-  accessToken: string;
-  refreshToken: string | null;
-}
+
 
 export async function authSessionMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
@@ -30,7 +24,7 @@ export async function authSessionMiddleware(request: NextRequest) {
     const session = (await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
-    })) as CustomSession | null;
+    })) as ICustomSession | null;
 
     // If the path is protected and user is not logged in, redirect to login
     if (isPrivatePath && !session?.accessToken) {

@@ -39,3 +39,13 @@ export interface IUserPassKeysResponse {
     user: IPasskeyUser;
     passkeys: IPasskey[];
 }
+
+// interface for next auth middleware 
+export interface ICustomSession {
+    user?: {
+      id?: string | null;
+      email?: string | null;
+    };
+    accessToken: string;
+    refreshToken: string | null;
+  }
