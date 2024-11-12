@@ -1,19 +1,9 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { ShieldPlus } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 const Homepage = () => {
-  const { data: session } = useSession();
-  console.warn(session);
-  if (session) {
-    // Access your stored data
-    console.warn(session.accessToken);
-    console.warn(session.user);
-    // Any other custom data you added
-  }
-
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
       <div className="wrapper flex w-full flex-col items-center justify-center space-y-6">

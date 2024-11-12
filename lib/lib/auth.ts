@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { envConfig } from "./env";
 
 async function refreshAccessToken(token: JWT) {
+  console.warn("refresh token function called")
   try {
     const response = await fetch(
       envConfig.BACKEND_SERVER_URL + "/api/auth/refresh-token/",
@@ -27,7 +28,7 @@ async function refreshAccessToken(token: JWT) {
     return {
       ...token,
       accessToken: refreshedTokens.accessToken,
-      accessTokenExpires: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+      accessTokenExpires: Date.now() + 14 * 60 * 1000, // 14 minutes
       refreshToken: refreshedTokens.refreshToken ?? token.refreshToken,
     };
   } catch (error) {
@@ -76,7 +77,7 @@ export const authOptions: NextAuthOptions = {
         // Store initial user data and tokens
         token.accessToken = user.accessToken;
         token.refreshToken = user.refreshToken;
-        token.accessTokenExpires = Date.now() + 24 * 60 * 60 * 1000;
+        token.accessTokenExpires = Date.now() + 14 * 60 * 1000; //14 minutes
         token.userId = user.userId;
         token.email = user.email;
         token.userRole = user.userRole;

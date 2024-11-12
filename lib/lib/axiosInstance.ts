@@ -14,7 +14,6 @@ axiosInstance.interceptors.request.use(
   async (config) => {
     // Get the session using next-auth
     const session = await getSession();
-    console.warn("token from axios ===============================: ", session);
 
     // If session exists and has accessToken, add it to headers
     if (session?.accessToken) {

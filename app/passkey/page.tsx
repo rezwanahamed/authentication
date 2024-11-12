@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import QrDialog from "./QrDialog";
 
-const Homepage = () => {
+const PasskeyPage = () => {
   const [userData, setUserData] = useState<IUserPassKeysResponse>();
   const [passkeys, setPasskeys] = useState<IPasskey[]>([]);
 
@@ -126,4 +126,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default PasskeyPage;

@@ -11,7 +11,6 @@ import { QrCode } from "lucide-react";
 import QRCode from "react-qr-code";
 
 const DashboardQrDialog = ({ qrValue }: { qrValue: IFetchUserData }) => {
-  console.warn("from qr component: ", qrValue);
   return (
     <div>
       <Dialog>

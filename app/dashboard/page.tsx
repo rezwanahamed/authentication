@@ -1,21 +1,23 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { fetchData } from "@/lib/utils/useApiGet";
+import { usePostData } from "@/lib/utils/useApiPost";
+import { IFetchUserData } from "@/types/interface";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Croissant, Key } from "lucide-react";
 import moment from "moment";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DashboardQrDialog from "./QrDialog";
-import { IFetchUserData } from "@/types/interface";
-
 
 const RandomAvatar = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [userData, setUserData] = useState<IFetchUserData>();
+  const { data: session } = useSession();
+  const { postData } = usePostData();
 
   useEffect(() => {
     const fetchedData = async () => {
@@ -56,11 +58,16 @@ const RandomAvatar = () => {
   }, [userData]); // Add size and seed to the dependency array
 
   const handleLogout = async () => {
-    signOut();
+    try {
+      await postData("/api/auth/logout", {
+        accessToken: session?.accessToken,
+        refreshToken: session?.refreshToken,
+      });
+      signOut();
+    } catch (error: any) {
+      console.error(error);
+    }
   };
-
-  const now = moment();
-  const formatted = now.format("YYYY-MM-DD");
 
   return (
     <div className="main-wrapper mx-auto flex max-h-max min-h-screen w-[25rem] items-center justify-center">
