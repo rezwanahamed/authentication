@@ -94,9 +94,9 @@ export const authOptions: NextAuthOptions = {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.user = {
-        id: token.userId,
-        email: token.email,
-        role: token.userRole,
+        userId: token.userId as string,
+        email: token.email as string,
+        userRole: token.userRole as string,
       };
       session.error = token.error;
       return session;

@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { fetchData } from "@/lib/utils/useApiGet";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Croissant, Key } from "lucide-react";
@@ -15,6 +16,23 @@ const RandomAvatar = ({
   seed?: number | string; // Make seed optional
 }) => {
   const [avatarUrl, setAvatarUrl] = useState("");
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const fetchedData = async () => {
+      try {
+        const response = await fetchData(
+          "/api/authorize-user/user-dashboard-data/",
+        );
+        console.warn(response);
+        setUserData(response);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchedData();
+  }, []);
 
   useEffect(() => {
     const generateAvatar = async () => {
@@ -41,6 +59,10 @@ const RandomAvatar = ({
 
     generateAvatar();
   }, [seed]); // Add size and seed to the dependency array
+
+
+
+  console.warn("********************* userData: ", userData);
 
   const handleLogout = async () => {
     signOut();
@@ -85,7 +107,10 @@ const RandomAvatar = ({
               Details card
             </Button>
           </Link>
-          <Button onClick={handleLogout} className="col-span-2 border border-red-600 bg-transparent font-geist_mono text-red-600 duration-300 hover:bg-red-600 hover:text-white">
+          <Button
+            onClick={handleLogout}
+            className="col-span-2 border border-red-600 bg-transparent font-geist_mono text-red-600 duration-300 hover:bg-red-600 hover:text-white"
+          >
             Logout
           </Button>
         </div>
