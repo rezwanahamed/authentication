@@ -9,6 +9,8 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { apiUrls } from "@/lib/config/apiUrls";
+import { appUrls } from "@/lib/config/appUrls";
 import { encryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,11 +41,11 @@ const LoginFormComponent = () => {
     form.reset();
 
     try {
-      const response = await postData("/api/auth/login", values);
+      const response = await postData(apiUrls.AUTH.LOGIN, values);
 
       if (response?.status === 200) {
         const encrypt = encryptData(values?.email as string);
-        router.push(`/login-verification/${encrypt}`);
+        router.push(`${appUrls.AUTH.SIGN_IN_VERIFICATION}/${encrypt}`);
       }
     } catch (err) {
       const axiosError = err as AxiosError;

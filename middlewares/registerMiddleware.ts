@@ -1,3 +1,4 @@
+import { appUrls } from "@/lib/config/appUrls";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -56,6 +57,10 @@ export function registerMiddleware(request: NextRequest) {
 
 // Configure which paths this middleware will run on
 export const registerMiddlewareConfig = {
-  matcher: ["/register", "/user-additional-details", "/password"],
+  matcher: [
+    appUrls.AUTH.SIGN_UP,
+    appUrls.AUTH.USER_ADDITIONAL_DETAILS,
+    appUrls.AUTH.PASSWORD,
+  ],
   handler: registerMiddleware,
 };

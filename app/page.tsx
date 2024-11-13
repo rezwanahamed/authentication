@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { appUrls } from "@/lib/config/appUrls";
 import { ShieldPlus } from "lucide-react";
 import Link from "next/link";
 
@@ -29,7 +30,7 @@ const Homepage = () => {
               Read doc
             </Button>
           </a>
-          <Link href={"/register"}>
+          <Link href={appUrls.AUTH.SIGN_UP}>
             <Button className="rounded-full bg-white p-6 font-geist_mono font-semibold text-black hover:text-white">
               Try it out
             </Button>

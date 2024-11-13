@@ -1,13 +1,14 @@
 import { NextAuthOptions } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { envConfig } from "./env";
+import { apiUrls } from "./config/apiUrls";
+import { envConfig } from "./config/env";
 
 async function refreshAccessToken(token: JWT) {
-  console.warn("refresh token function called")
+  console.warn("refresh token function called");
   try {
     const response = await fetch(
-      envConfig.BACKEND_SERVER_URL + "/api/auth/refresh-token/",
+      envConfig.BACKEND_SERVER_URL + apiUrls.AUTH.REFRESH_TOKEN,
       {
         method: "POST",
         headers: {
@@ -31,7 +32,7 @@ async function refreshAccessToken(token: JWT) {
       accessTokenExpires: Date.now() + 14 * 60 * 1000, // 14 minutes
       refreshToken: refreshedTokens.refreshToken ?? token.refreshToken,
     };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return {
       ...token,

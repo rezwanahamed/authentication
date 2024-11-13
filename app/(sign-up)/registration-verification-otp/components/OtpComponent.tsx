@@ -4,6 +4,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { apiUrls } from "@/lib/config/apiUrls";
+import { appUrls } from "@/lib/config/appUrls";
 import { decryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
@@ -38,7 +40,7 @@ export function OtpComponent() {
   const handleSubmit = async (otpValue: string) => {
     if (decryptedData?.page === "login-verification") {
       try {
-        const response = await postData("/api/auth/login-otp-verification", {
+        const response = await postData(apiUrls.AUTH.LOGIN_OTP_VERIFICATION, {
           email: decryptedData?.email,
           otp: otpValue,
         });
@@ -55,7 +57,7 @@ export function OtpComponent() {
             toast.success("Signed in successfully! 😍😍😍", {
               position: "top-center",
             });
-            router.push("/dashboard"); // Redirect to the dashboard page
+            router.push(appUrls.PROTECTED.DASHBOARD); // Redirect to the dashboard page
           } else {
             toast.error("Sign-in failed. Please try again", {
               position: "top-center",
@@ -80,7 +82,7 @@ export function OtpComponent() {
       }
     } else {
       try {
-        const response = await postData("/api/auth/register-otp-verification", {
+        const response = await postData(apiUrls.AUTH.REGISTER_OTP_VERIFICATION, {
           email: decryptedData,
           otp: otpValue,
         });
@@ -97,7 +99,7 @@ export function OtpComponent() {
             toast.success("Signed in successfully! 😍😍😍", {
               position: "top-center",
             });
-            router.push("/dashboard"); // Redirect to the dashboard page
+            router.push(appUrls.PROTECTED.DASHBOARD); // Redirect to the dashboard page
           } else {
             toast.error("Sign-in failed. Please try again", {
               position: "top-center",
@@ -142,7 +144,7 @@ export function OtpComponent() {
     setRemainingTime(40);
     // Add your resend OTP API call here
     try {
-      const response = await postData("/api/auth/generate-new-register-opt", {
+      const response = await postData(apiUrls.AUTH.GENERATE_NEW_REGISTER_OTP, {
         email: decryptedData,
       });
 

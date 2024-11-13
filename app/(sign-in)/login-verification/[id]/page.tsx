@@ -1,4 +1,6 @@
 "use client";
+import { apiUrls } from "@/lib/config/apiUrls";
+import { appUrls } from "@/lib/config/appUrls";
 import { decryptData, encryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import { Key, Mail, Smartphone, Sticker } from "lucide-react";
@@ -19,12 +21,12 @@ const Homepage = () => {
       };
       const encryptPayload = encryptData(payload);
       try {
-        const response = await postData("/api/auth/generate-login-otp", {
+        const response = await postData(apiUrls.AUTH.GENERATE_LOGIN_OTP, {
           credential: decryptedEmail,
           credentialType: "email",
         });
         if (response?.status === 200) {
-          router.push(`/otp/${encryptPayload}`);
+          router.push(`${appUrls.AUTH.OTP}/${encryptPayload}`);
         }
       } catch (err) {
         console.error(err);
@@ -32,7 +34,7 @@ const Homepage = () => {
       return;
     }
     if (type === "passkey") {
-      router.push(`/pass-key-verification/${params?.id}`);
+      router.push(`${appUrls.AUTH.passkey_verification}/${params?.id}`);
       return;
     }
   };

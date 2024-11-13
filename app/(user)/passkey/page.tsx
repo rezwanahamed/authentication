@@ -1,5 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { apiUrls } from "@/lib/config/apiUrls";
 import { IPasskey, IUserPassKeysResponse } from "@/types/interface";
 import { fetchData } from "@/utils/useApiGet";
 import { Copy, RotateCw, Sticker } from "lucide-react";
@@ -14,7 +15,7 @@ const PasskeyPage = () => {
   useEffect(() => {
     const fetchedData = async () => {
       try {
-        const response = await fetchData("/api/authorize-user/user-passkey");
+        const response = await fetchData(apiUrls.PROTECTED.USER_PASSKEYS);
         setUserData(response);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -26,9 +27,7 @@ const PasskeyPage = () => {
 
   const handleGeneratePasskeys = async () => {
     try {
-      const response = await fetchData(
-        "/api/authorize-user/generate-new-passkeys",
-      );
+      const response = await fetchData(apiUrls.PROTECTED.USER_GENERATE_PASSKEY);
       if (response) {
         toast.success("New passkeys generated", {
           position: "top-center",

@@ -1,20 +1,23 @@
+import { appUrls } from "@/lib/config/appUrls";
 import { ICustomSession } from "@/types/interface";
 import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
-
-
 
 export async function authSessionMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // Define public paths that don't require authentication
-  const privatePaths = ["/details", "/passkey", "/dashboard"];
+  const privatePaths = [
+    appUrls.PROTECTED.DASHBOARD,
+    appUrls.PROTECTED.DETAILS,
+    appUrls.PROTECTED.PASSKEY,
+  ];
   const restrictedPaths = [
-    "/register",
-    "/otp",
-    "/registration-verification-otp",
-    "/password",
-    "/user-additional-details",
+    appUrls.AUTH.SIGN_UP,
+    appUrls.AUTH.OTP,
+    appUrls.AUTH.REGISTER_OTP_VERIFICATION,
+    appUrls.AUTH.PASSWORD,
+    appUrls.AUTH.USER_ADDITIONAL_DETAILS,
   ];
   const isPrivatePath = privatePaths.includes(path);
   const isRestrictedPath = restrictedPaths.includes(path);
@@ -43,14 +46,9 @@ export async function authSessionMiddleware(request: NextRequest) {
 
 export const authSessionMiddlewareConfig = {
   matcher: [
-    "/details",
-    "/dashboard",
-    "/passkey",
-    "/register",
-    "/registration-verification-otp",
-    "/otp",
-    "/password",
-    "/user-additional-details",
+    appUrls.PROTECTED.DASHBOARD,
+    appUrls.PROTECTED.DETAILS,
+    appUrls.PROTECTED.PASSKEY,
   ],
   handler: authSessionMiddleware,
 };

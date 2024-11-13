@@ -12,6 +12,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import DashboardQrDialog from "./QrDialog";
+import { apiUrls } from "@/lib/config/apiUrls";
+import { appUrls } from "@/lib/config/appUrls";
 
 const RandomAvatar = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -23,7 +25,7 @@ const RandomAvatar = () => {
     const fetchedData = async () => {
       try {
         const response = await fetchData(
-          "/api/authorize-user/user-dashboard-data/",
+          apiUrls.PROTECTED.USER_DETAILS,
         );
         setUserData(response);
       } catch (error) {
@@ -59,7 +61,7 @@ const RandomAvatar = () => {
 
   const handleLogout = async () => {
     try {
-      await postData("/api/auth/logout", {
+      await postData(apiUrls.AUTH.LOGOUT, {
         accessToken: session?.accessToken,
         refreshToken: session?.refreshToken,
       });
@@ -99,7 +101,7 @@ const RandomAvatar = () => {
           <div className="type">User</div>
         </div>
         <div className="button-group grid grid-cols-2 gap-3">
-          <Link href={"/passkey"}>
+          <Link href={appUrls.PROTECTED.PASSKEY}>
             <Button className="mt-4 w-full border border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
               <span>
                 <Key className="mr-2 w-4" />
@@ -107,7 +109,7 @@ const RandomAvatar = () => {
               Pass keys
             </Button>
           </Link>
-          <Link href={"/details"}>
+          <Link href={appUrls.PROTECTED.DETAILS}>
             <Button className="mt-4 border border-blue-500 bg-transparent font-geist_mono text-blue-500 duration-300 hover:bg-blue-500 hover:text-white">
               <span>
                 <Croissant className="mr-2 w-4" />

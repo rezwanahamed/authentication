@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import { envConfig } from "../lib/env";
+import { envConfig } from "../lib/config/env";
 
 const SECRET_KEY = envConfig.ENCRYPTION_SECRET_KEY;
 

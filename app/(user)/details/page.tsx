@@ -1,4 +1,5 @@
 "use client";
+import { apiUrls } from "@/lib/config/apiUrls";
 import { IFetchUserData } from "@/types/interface";
 import { fetchData } from "@/utils/useApiGet";
 import { loreleiNeutral } from "@dicebear/collection";
@@ -15,9 +16,7 @@ const RandomAvatar = () => {
   useEffect(() => {
     const fetchedData = async () => {
       try {
-        const response = await fetchData(
-          "/api/authorize-user/user-dashboard-data/",
-        );
+        const response = await fetchData(apiUrls.PROTECTED.USER_DETAILS);
         setUserData(response);
       } catch (error) {
         console.error("Error fetching user data:", error);

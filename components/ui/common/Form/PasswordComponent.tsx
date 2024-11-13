@@ -1,6 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { apiUrls } from "@/lib/config/apiUrls";
+import { appUrls } from "@/lib/config/appUrls";
 import { encryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import useRegisterFormStore from "@/zustand/useRegisterFormStore";
@@ -90,7 +92,7 @@ const PasswordComponent = () => {
     const dataToSend = { ...mergedData, password: values?.password };
 
     try {
-      const response = await postData("/api/auth/register", dataToSend); // Use response directly
+      const response = await postData(apiUrls.AUTH.REGISTER, dataToSend); // Use response directly
       if (response?.status === 201) {
         toast.success(
           "Your account has been created successfully, check your email to verify your account",
@@ -99,18 +101,18 @@ const PasswordComponent = () => {
           },
         );
         const encrypt = encryptData(mergedData?.email as string);
-        router.push(`/registration-verification-otp/${encrypt}`);
+        router.push(`${appUrls.AUTH.REGISTER_OTP_VERIFICATION}/${encrypt}`);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error?.status === 400) {
         toast.error("User already exists", { position: "top-center" });
-        router.push("/register");
+        router.push(appUrls.AUTH.SIGN_UP);
       } else if (error?.status === 401) {
         toast.error("This phone number is already used", {
           position: "top-center",
         });
-        router.push("/register");
+        router.push(appUrls.AUTH.SIGN_UP);
       } else {
         toast.error(error.message || "Server error", {
           position: "top-center",

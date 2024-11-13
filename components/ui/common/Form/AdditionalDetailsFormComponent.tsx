@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { appUrls } from "@/lib/config/appUrls";
 import useObjectStore from "@/zustand/pageStatusCheckStore";
 import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -50,7 +51,7 @@ const AdditionalDetailsFormComponent = () => {
     appendFormData(values);
     form.reset();
     setValue("password-page-access", true);
-    router.push("/password");
+    router.push(appUrls.AUTH.PASSWORD);
     setErrorMessages([]);
   }
 

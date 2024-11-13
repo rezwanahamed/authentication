@@ -8,6 +8,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { appUrls } from "@/lib/config/appUrls";
 import useObjectStore from "@/zustand/pageStatusCheckStore";
 import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,7 +68,7 @@ const RegisterFormComponent = () => {
     clearFormData();
     appendFormData(values);
     setValue("user-additional-details-access", "true");
-    router.push("/user-additional-details");
+    router.push(appUrls.AUTH.USER_ADDITIONAL_DETAILS);
     form.reset();
     setErrorMessages([]);
   }

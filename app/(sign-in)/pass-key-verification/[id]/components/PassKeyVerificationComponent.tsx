@@ -4,6 +4,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { apiUrls } from "@/lib/config/apiUrls";
+import { appUrls } from "@/lib/config/appUrls";
 import { decryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import { signIn } from "next-auth/react";
@@ -35,7 +37,7 @@ export function PasskeyVerificationComponent() {
   // Handle OTP submission
   const handleSubmit = async (otpValue: string) => {
     try {
-      const response = await postData("/api/auth/login-via-passkey", {
+      const response = await postData(apiUrls.AUTH.LOGIN_IN_VIA_PASSKEY, {
         email: decryptedEmail,
         passkey: otpValue,
       });
@@ -51,7 +53,7 @@ export function PasskeyVerificationComponent() {
           toast.success("Log in successfully", {
             position: "top-center",
           });
-          router.push("/dashboard");
+          router.push(appUrls.PROTECTED.DASHBOARD);
         } else {
           toast.error("Sign-in failed. Please try again", {
             position: "top-center",

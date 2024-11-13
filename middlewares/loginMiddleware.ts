@@ -1,7 +1,8 @@
+import { appUrls } from "@/lib/config/appUrls";
+import { ICustomSession } from "@/types/interface";
+import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
-import { ICustomSession } from "@/types/interface";
 
 type PageOrder = {
   [key: string]: number;
@@ -15,10 +16,10 @@ const pageOrder: PageOrder = {
 
 // All restricted paths including those not in sequence
 const restrictedPaths = [
-  "/login",
-  "/login-verification",
-  "/pass-key-verification",
-  "/otp",
+  appUrls.AUTH.SIGN_IN,
+  appUrls.AUTH.SIGN_IN_VERIFICATION,
+  appUrls.AUTH.passkey_verification,
+  appUrls.AUTH.OTP,
 ];
 
 export async function loginMiddleware(request: NextRequest) {
@@ -28,10 +29,10 @@ export async function loginMiddleware(request: NextRequest) {
     const isRestrictedPath = restrictedPaths.includes(path);
 
     // First check session to prevent authenticated users from accessing login flows
-    const session = await getToken({
+    const session = (await getToken({
       req: request,
       secret: process.env.NEXTAUTH_SECRET,
-    }) as ICustomSession | null;
+    })) as ICustomSession | null;
 
     if (isRestrictedPath && session?.accessToken) {
       return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -52,26 +53,33 @@ export async function loginMiddleware(request: NextRequest) {
 
     // Only check sequence for pages in pageOrder
     if (pageOrder[currentPage]) {
-      const previousPage = referer ? new URL(referer).pathname.split("/")[1] : null;
+      const previousPage = referer
+        ? new URL(referer).pathname.split("/")[1]
+        : null;
       const currentPageOrder = pageOrder[currentPage];
       const previousPageOrder = previousPage ? pageOrder[previousPage] : 0;
 
       // Check if trying to access a page without visiting the previous page in sequence
-      if (currentPageOrder > 1 && (!previousPage || currentPageOrder > previousPageOrder + 1)) {
+      if (
+        currentPageOrder > 1 &&
+        (!previousPage || currentPageOrder > previousPageOrder + 1)
+      ) {
         // Find the correct previous page in the sequence
         const correctPreviousPage = Object.entries(pageOrder).find(
           ([_, order]) => order === currentPageOrder - 1,
         )?.[0];
 
         if (correctPreviousPage) {
-          return NextResponse.redirect(new URL(`/${correctPreviousPage}`, request.url));
+          return NextResponse.redirect(
+            new URL(`/${correctPreviousPage}`, request.url),
+          );
         }
       }
     }
 
     return NextResponse.next();
   } catch (error) {
-    console.error('Login middleware error:', error);
+    console.error("Login middleware error:", error);
     // In case of any error, redirect to login page as a fallback
     return NextResponse.redirect(new URL("/login", request.url));
   }
@@ -81,6 +89,3 @@ export const loginMiddlewareConfig = {
   matcher: restrictedPaths,
   handler: loginMiddleware,
 };
-
-
-
