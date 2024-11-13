@@ -101,6 +101,7 @@ const PasswordComponent = () => {
         const encrypt = encryptData(mergedData?.email as string);
         router.push(`/registration-verification-otp/${encrypt}`);
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error?.status === 400) {
         toast.error("User already exists", { position: "top-center" });

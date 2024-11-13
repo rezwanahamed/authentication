@@ -31,21 +31,6 @@ const Homepage = () => {
       }
       return;
     }
-    if (type === "phone") {
-      router.push(`/otp/${decryptedEmail}`);
-      try {
-        // const response = await postData("/api/auth/generate-login-otp", {
-        //   credential: decryptedEmail,
-        //   credentialType: "phone",
-        // });
-        // if (response?.status === 200) {
-        //   router.push(`/otp/${decryptedEmail}`);
-        // }
-      } catch (err) {
-        console.error(err);
-      }
-      return;
-    }
     if (type === "passkey") {
       router.push(`/pass-key-verification/${params?.id}`);
       return;

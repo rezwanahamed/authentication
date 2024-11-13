@@ -31,6 +31,7 @@ async function refreshAccessToken(token: JWT) {
       accessTokenExpires: Date.now() + 14 * 60 * 1000, // 14 minutes
       refreshToken: refreshedTokens.refreshToken ?? token.refreshToken,
     };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return {
       ...token,

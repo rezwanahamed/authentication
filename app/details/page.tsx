@@ -8,11 +8,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
-const RandomAvatar = ({
-  seed,
-}: {
-  seed?: number | string; // Make seed optional
-}) => {
+const RandomAvatar = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [userData, setUserData] = useState<IFetchUserData>();
 

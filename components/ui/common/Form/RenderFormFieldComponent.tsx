@@ -7,6 +7,7 @@ import {
   import { Input } from "@/components/ui/input"; 
   
   export const renderFormField = (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     form: any,
     name: string, 
     label: string,

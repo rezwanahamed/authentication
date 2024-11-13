@@ -11,21 +11,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
-interface OtpComponentProps {
-  email?: string;
-  onVerificationSuccess?: () => void;
-}
 
-export function PasskeyVerificationComponent({
-  email,
-  onVerificationSuccess,
-}: OtpComponentProps) {
+export function PasskeyVerificationComponent() {
   const params = useParams();
   const router = useRouter();
   const decryptedEmail = decryptData(params?.id as string);
 
   const [otp, setOtp] = useState<string>("");
-  const { postData, isLoading } = usePostData();
+  const { postData } = usePostData();
 
   // Updated OTP change handler to allow all characters
   const handleOtpChange = useCallback((value: string) => {
@@ -37,6 +30,7 @@ export function PasskeyVerificationComponent({
     if (sanitizedValue.length === 10) {
       handleSubmit(sanitizedValue);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle OTP submission
@@ -65,6 +59,7 @@ export function PasskeyVerificationComponent({
           });
         }
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const errorMessages = {
         401: "Invalid OTP",
