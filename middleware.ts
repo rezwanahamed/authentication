@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
 
-import { MiddlewareChain } from "./lib/utils/middlewareChain";
 import { authSessionMiddlewareConfig } from "./middlewares/authSessionMiddleware";
 import { loginMiddlewareConfig } from "./middlewares/loginMiddleware";
 import { registerMiddlewareConfig } from "./middlewares/registerMiddleware";
+import { MiddlewareChain } from "./utils/middlewareChain";
 
 const middlewareChain = new MiddlewareChain();
 middlewareChain

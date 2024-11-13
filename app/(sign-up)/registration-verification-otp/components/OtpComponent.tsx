@@ -4,8 +4,8 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { decryptData } from "@/lib/utils/cryptoUtils";
-import { usePostData } from "@/lib/utils/useApiPost";
+import { decryptData } from "@/utils/cryptoUtils";
+import { usePostData } from "@/utils/useApiPost";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { signIn } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";

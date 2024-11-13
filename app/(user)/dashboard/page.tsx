@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { fetchData } from "@/lib/utils/useApiGet";
-import { usePostData } from "@/lib/utils/useApiPost";
 import { IFetchUserData } from "@/types/interface";
+import { fetchData } from "@/utils/useApiGet";
+import { usePostData } from "@/utils/useApiPost";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Croissant, Key } from "lucide-react";
@@ -64,7 +64,7 @@ const RandomAvatar = () => {
         refreshToken: session?.refreshToken,
       });
       signOut();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
     }

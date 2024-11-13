@@ -9,14 +9,14 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { usePostData } from "@/lib/utils/useApiPost";
+import { encryptData } from "@/utils/cryptoUtils";
+import { usePostData } from "@/utils/useApiPost";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AxiosError } from "axios";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { AxiosError } from "axios";
-import { useRouter } from "next/navigation";
-import { encryptData } from "@/lib/utils/cryptoUtils";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -25,8 +25,8 @@ const formSchema = z.object({
 
 const LoginFormComponent = () => {
   const { postData } = usePostData();
-  const router = useRouter()
-  
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,7 +40,7 @@ const LoginFormComponent = () => {
 
     try {
       const response = await postData("/api/auth/login", values);
-      
+
       if (response?.status === 200) {
         const encrypt = encryptData(values?.email as string);
         router.push(`/login-verification/${encrypt}`);
@@ -54,7 +54,9 @@ const LoginFormComponent = () => {
       } else if (axiosError.response?.status === 403) {
         toast.error("User not verified", { position: "top-center" });
       } else {
-        toast.error(axiosError.message || "Server error", { position: "top-center" });
+        toast.error(axiosError.message || "Server error", {
+          position: "top-center",
+        });
       }
     }
   }
@@ -90,7 +92,7 @@ const LoginFormComponent = () => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {renderFormField("email", "Email", "email")}
           {renderFormField("password", "Password", "password")}
-          
+
           <Button
             className="w-full border border-blue-500 bg-blue-500 font-geist duration-300 hover:bg-transparent hover:text-blue-500"
             type="submit"

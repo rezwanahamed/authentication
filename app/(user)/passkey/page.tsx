@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { fetchData } from "@/lib/utils/useApiGet";
 import { IPasskey, IUserPassKeysResponse } from "@/types/interface";
-import { RotateCw, Sticker, Copy } from "lucide-react";
+import { fetchData } from "@/utils/useApiGet";
+import { Copy, RotateCw, Sticker } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import QrDialog from "./QrDialog";
@@ -41,12 +41,14 @@ const PasskeyPage = () => {
   };
 
   const handleCopyPasskeys = () => {
-    const passkeysToDisplay = passkeys.length > 0 
-      ? passkeys.map(pk => pk.passkey).join('\n')
-      : userData?.passkeys?.map(pk => pk.passkey).join('\n');
+    const passkeysToDisplay =
+      passkeys.length > 0
+        ? passkeys.map((pk) => pk.passkey).join("\n")
+        : userData?.passkeys?.map((pk) => pk.passkey).join("\n");
 
     if (passkeysToDisplay) {
-      navigator.clipboard.writeText(passkeysToDisplay)
+      navigator.clipboard
+        .writeText(passkeysToDisplay)
         .then(() => {
           toast.success("Passkeys copied to clipboard", {
             position: "top-center",
@@ -72,8 +74,8 @@ const PasskeyPage = () => {
             Your account recovery details
           </h2>
           <p className="w-full font-geist text-sm font-medium text-gray-400">
-            Please do not share your account credentials with others. Use passkey
-            to recover your account.
+            Please do not share your account credentials with others. Use
+            passkey to recover your account.
           </p>
         </div>
 
@@ -90,9 +92,9 @@ const PasskeyPage = () => {
                   ))}
             </ul>
             <div className="button-group mt-4 flex items-center gap-3">
-              <Button 
+              <Button
                 onClick={handleCopyPasskeys}
-                className="bg-blue-500 font-geist_mono flex items-center gap-2"
+                className="flex items-center gap-2 bg-blue-500 font-geist_mono"
               >
                 <Copy className="h-4 w-4" />
                 Copy passkey

@@ -4,13 +4,12 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { decryptData } from "@/lib/utils/cryptoUtils";
-import { usePostData } from "@/lib/utils/useApiPost";
+import { decryptData } from "@/utils/cryptoUtils";
+import { usePostData } from "@/utils/useApiPost";
 import { signIn } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
-
 
 export function PasskeyVerificationComponent() {
   const params = useParams();
@@ -30,7 +29,7 @@ export function PasskeyVerificationComponent() {
     if (sanitizedValue.length === 10) {
       handleSubmit(sanitizedValue);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle OTP submission
@@ -59,7 +58,7 @@ export function PasskeyVerificationComponent() {
           });
         }
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const errorMessages = {
         401: "Invalid OTP",

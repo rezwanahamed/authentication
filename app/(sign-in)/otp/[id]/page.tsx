@@ -1,5 +1,5 @@
 "use client";
-import { OtpComponent } from "@/app/registration-verification-otp/components/OtpComponent";
+import { OtpComponent } from "@/app/(sign-up)/registration-verification-otp/components/OtpComponent";
 import { Asterisk } from "lucide-react";
 
 

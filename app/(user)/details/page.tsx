@@ -1,6 +1,6 @@
 "use client";
-import { fetchData } from "@/lib/utils/useApiGet";
 import { IFetchUserData } from "@/types/interface";
+import { fetchData } from "@/utils/useApiGet";
 import { loreleiNeutral } from "@dicebear/collection";
 import { createAvatar } from "@dicebear/core";
 import { Castle, Cat, Flower2 } from "lucide-react";

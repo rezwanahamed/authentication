@@ -1,4 +1,4 @@
-import axiosInstance from "@/lib/lib/axiosInstance";
+import axiosInstance from "@/lib/axiosInstance";
 import { useState } from "react";
 
 type UpdateDataHook<T> = {

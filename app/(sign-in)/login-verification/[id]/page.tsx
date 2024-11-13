@@ -1,6 +1,6 @@
 "use client";
-import { decryptData, encryptData } from "@/lib/utils/cryptoUtils";
-import { usePostData } from "@/lib/utils/useApiPost";
+import { decryptData, encryptData } from "@/utils/cryptoUtils";
+import { usePostData } from "@/utils/useApiPost";
 import { Key, Mail, Smartphone, Sticker } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 

@@ -1,7 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { usePostData } from "@/lib/utils/useApiPost";
+import { encryptData } from "@/utils/cryptoUtils";
+import { usePostData } from "@/utils/useApiPost";
 import useRegisterFormStore from "@/zustand/useRegisterFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ShieldAlert } from "lucide-react";
@@ -12,7 +13,6 @@ import { toast } from "sonner";
 import { z } from "zod";
 import zxcvbn from "zxcvbn";
 import { renderFormField } from "./RenderFormFieldComponent";
-import { encryptData } from "@/lib/utils/cryptoUtils";
 
 const formSchema = z
   .object({
@@ -101,7 +101,7 @@ const PasswordComponent = () => {
         const encrypt = encryptData(mergedData?.email as string);
         router.push(`/registration-verification-otp/${encrypt}`);
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       if (error?.status === 400) {
         toast.error("User already exists", { position: "top-center" });
