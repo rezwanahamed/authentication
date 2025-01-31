@@ -49,6 +49,11 @@ export const authSessionMiddlewareConfig = {
     appUrls.PROTECTED.DASHBOARD,
     appUrls.PROTECTED.DETAILS,
     appUrls.PROTECTED.PASSKEY,
+    appUrls.AUTH.SIGN_UP,
+    appUrls.AUTH.OTP,
+    appUrls.AUTH.REGISTER_OTP_VERIFICATION,
+    appUrls.AUTH.PASSWORD,
+    appUrls.AUTH.USER_ADDITIONAL_DETAILS,
   ],
   handler: authSessionMiddleware,
 };
