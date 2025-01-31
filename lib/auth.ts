@@ -4,8 +4,28 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { apiUrls } from "./config/apiUrls";
 import { envConfig } from "./config/env";
 
-async function refreshAccessToken(token: JWT) {
-  console.warn("refresh token function called");
+// Define types for your tokens and user data
+interface Token extends JWT {
+  accessToken: string;
+  refreshToken: string;
+  accessTokenExpires: number;
+  userId: string;
+  email: string;
+  userRole: string;
+  error?: string;
+}
+
+interface User {
+  id: string;
+  accessToken: string;
+  refreshToken: string;
+  userId: string;
+  email: string;
+  userRole: string;
+}
+
+async function refreshAccessToken(token: Token): Promise<Token> {
+  console.warn("Refresh token function called");
   try {
     const response = await fetch(
       envConfig.BACKEND_SERVER_URL + apiUrls.AUTH.REFRESH_TOKEN,
@@ -15,7 +35,7 @@ async function refreshAccessToken(token: JWT) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          refreshToken: token.refreshToken,
+          refreshToken: token.refreshToken, // Ensure refreshToken is passed
         }),
       },
     );
@@ -23,17 +43,17 @@ async function refreshAccessToken(token: JWT) {
     const refreshedTokens = await response.json();
 
     if (!response.ok) {
-      throw refreshedTokens;
+      throw new Error(refreshedTokens.message || "Failed to refresh token");
     }
 
     return {
       ...token,
       accessToken: refreshedTokens.accessToken,
       accessTokenExpires: Date.now() + 14 * 60 * 1000, // 14 minutes
-      refreshToken: refreshedTokens.refreshToken ?? token.refreshToken,
+      refreshToken: refreshedTokens.refreshToken ?? token.refreshToken, // Ensure new refreshToken is stored
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
+    console.error("Error refreshing access token:", error);
     return {
       ...token,
       error: "RefreshAccessTokenError",
@@ -63,7 +83,7 @@ export const authOptions: NextAuthOptions = {
               userId: credentials.userId,
               email: credentials.email,
               userRole: credentials.userRole,
-            };
+            } as User;
           }
           return null;
         } catch (error) {
@@ -77,12 +97,15 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         // Store initial user data and tokens
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
-        token.accessTokenExpires = Date.now() + 14 * 60 * 1000; //14 minutes
-        token.userId = user.userId;
-        token.email = user.email;
-        token.userRole = user.userRole;
+        return {
+          ...token,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken, // Ensure refreshToken is stored
+          accessTokenExpires: Date.now() + 14 * 60 * 1000, // 14 minutes
+          userId: user.userId,
+          email: user.email,
+          userRole: user.userRole,
+        } as Token;
       }
 
       // Return existing token if access token has not expired
@@ -91,7 +114,7 @@ export const authOptions: NextAuthOptions = {
       }
 
       // Access token expired, refresh it
-      return await refreshAccessToken(token);
+      return await refreshAccessToken(token as Token);
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
