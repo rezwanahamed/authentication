@@ -32,7 +32,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         className={`font-geist ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
-        <Toaster />
+        <Toaster richColors={true}/>
       </body>
     </html>
   );
