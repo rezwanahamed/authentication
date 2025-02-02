@@ -53,7 +53,7 @@ axiosInstance.interceptors.response.use(
         );
 
         if (refreshResponse.status === 200) {
-          alert("Access token refreshed successfully");
+          // alert("Access token refreshed successfully");
           const newAccessToken = refreshResponse.data.accessToken;
           const newRefreshToken = refreshResponse.data.refreshToken;
 

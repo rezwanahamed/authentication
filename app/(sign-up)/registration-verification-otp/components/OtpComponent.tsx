@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/input-otp";
 import { apiUrls } from "@/lib/config/apiUrls";
 import { appUrls } from "@/lib/config/appUrls";
+import { cn } from "@/lib/utils";
 import { decryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
@@ -22,6 +23,7 @@ export function OtpComponent() {
   const [otp, setOtp] = useState<string>("");
   const [remainingTime, setRemainingTime] = useState<number>(40);
   const { postData, isLoading } = usePostData();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   // Improved OTP change handler
   const handleOtpChange = useCallback((value: string) => {
@@ -71,21 +73,24 @@ export function OtpComponent() {
           400: "User not found",
           default: error.message || "Server error",
         };
-
-        toast.error(
+        const message =
           errorMessages[error?.status as keyof typeof errorMessages] ||
-            errorMessages.default,
-          {
-            position: "top-center",
-          },
-        );
+          errorMessages.default;
+        setErrorMessage(message);
+
+        toast.error(message, {
+          position: "top-center",
+        });
       }
     } else {
       try {
-        const response = await postData(apiUrls.AUTH.REGISTER_OTP_VERIFICATION, {
-          email: decryptedData,
-          otp: otpValue,
-        });
+        const response = await postData(
+          apiUrls.AUTH.REGISTER_OTP_VERIFICATION,
+          {
+            email: decryptedData,
+            otp: otpValue,
+          },
+        );
         if (response?.status === 200) {
           // onVerificationSuccess?.();
           const result = await signIn("credentials", {
@@ -113,14 +118,14 @@ export function OtpComponent() {
           400: "User not found",
           default: error.message || "Server error",
         };
-
-        toast.error(
+        const message =
           errorMessages[error?.status as keyof typeof errorMessages] ||
-            errorMessages.default,
-          {
-            position: "top-center",
-          },
-        );
+          errorMessages.default;
+        setErrorMessage(message);
+
+        toast.error(message, {
+          position: "top-center",
+        });
       }
     }
   };
@@ -136,7 +141,7 @@ export function OtpComponent() {
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [remainingTime]);
+  });
 
   // Resend OTP handler
   const handleResendOtp = async () => {
@@ -149,6 +154,7 @@ export function OtpComponent() {
       });
 
       if (response?.status === 201) {
+        setErrorMessage(null);
         toast.success("New Opt has been send", {
           position: "top-center",
         });
@@ -182,7 +188,11 @@ export function OtpComponent() {
             <InputOTPSlot
               key={index}
               index={index}
-              className="h-[4rem] w-[4rem] border-gray-400 text-3xl focus:border-blue-500 focus:outline-none"
+              className={cn(
+                errorMessage
+                  ? "ml-[-1px] h-[4rem] w-[4rem] border-2 border-l-0 border-red-500 text-3xl transition-all duration-200 hover:border-primaryColor focus:border-primaryColor focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-2"
+                  : "ml-[-1px] h-[4rem] w-[4rem] border-2 border-l-0 text-3xl transition-all duration-200 hover:border-primaryColor focus:border-primaryColor focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-2",
+              )}
             />
           ))}
         </InputOTPGroup>

@@ -14,7 +14,7 @@ const config: Config = {
 			geist_mono: ['var(--font-geist-mono)', 'monospace'],
 		  },
   		colors: {
-			primaryColor: "#246bfc",
+			primaryColor: "#3B82F6", // blue-500
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
 			primaryBackground: "#212121", 

@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/input-otp";
 import { apiUrls } from "@/lib/config/apiUrls";
 import { appUrls } from "@/lib/config/appUrls";
+import { cn } from "@/lib/utils";
 import { decryptData } from "@/utils/cryptoUtils";
 import { usePostData } from "@/utils/useApiPost";
 import { signIn } from "next-auth/react";
@@ -20,6 +21,7 @@ export function PasskeyVerificationComponent() {
 
   const [otp, setOtp] = useState<string>("");
   const { postData } = usePostData();
+  const [errorMessage, setErrorMessage] = useState<string | null>();
 
   // Updated OTP change handler to allow all characters
   const handleOtpChange = useCallback((value: string) => {
@@ -68,6 +70,10 @@ export function PasskeyVerificationComponent() {
         default: error.message || "Server error",
       };
 
+      setErrorMessage(
+        errorMessages[error?.status as keyof typeof errorMessages] ||
+          errorMessages.default,
+      );
       toast.error(
         errorMessages[error?.status as keyof typeof errorMessages] ||
           errorMessages.default,
@@ -91,7 +97,11 @@ export function PasskeyVerificationComponent() {
             <InputOTPSlot
               key={index}
               index={index}
-              className="h-[3.5rem] w-[3.5rem] border-gray-400 text-3xl focus:border-blue-500 focus:outline-none"
+              className={cn(
+                errorMessage
+                  ? "ml-[-1px] h-[3.5rem] w-[3.5rem] border-2 border-l-0 border-red-500 text-3xl transition-all duration-200 hover:border-primaryColor focus:border-primaryColor focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-2"
+                  : "ml-[-1px] h-[3.5rem] w-[3.5rem] border-2 border-l-0 text-3xl transition-all duration-200 hover:border-primaryColor focus:border-primaryColor focus:outline-none focus:ring-2 focus:ring-primaryColor focus:ring-offset-2",
+              )}
             />
           ))}
         </InputOTPGroup>
