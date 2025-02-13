@@ -34,7 +34,7 @@ const Homepage = () => {
       return;
     }
     if (type === "passkey") {
-      router.push(`${appUrls.AUTH.passkey_verification}/${params?.id}`);
+      router.push(`${appUrls.AUTH.PASSKEY_VALIDATION}/${params?.id}`);
       return;
     }
   };

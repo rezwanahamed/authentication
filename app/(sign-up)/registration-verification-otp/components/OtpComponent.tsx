@@ -47,7 +47,6 @@ export function OtpComponent() {
           otp: otpValue,
         });
         if (response?.status === 200) {
-          // onVerificationSuccess?.();
           const result = await signIn("credentials", {
             redirect: false,
             accessToken: response?.data?.accessToken,
@@ -56,7 +55,7 @@ export function OtpComponent() {
             email: response?.data?.user.email,
           });
           if (!result?.error) {
-            toast.success("Signed in successfully! 😍😍😍", {
+            toast.success("Signed in successfully", {
               position: "top-center",
             });
             router.push(appUrls.PROTECTED.DASHBOARD); // Redirect to the dashboard page
@@ -92,7 +91,6 @@ export function OtpComponent() {
           },
         );
         if (response?.status === 200) {
-          // onVerificationSuccess?.();
           const result = await signIn("credentials", {
             redirect: false,
             accessToken: response?.data?.accessToken,
@@ -101,7 +99,7 @@ export function OtpComponent() {
             email: response?.data?.user.email,
           });
           if (!result?.error) {
-            toast.success("Signed in successfully! 😍😍😍", {
+            toast.success("Signed in successfully", {
               position: "top-center",
             });
             router.push(appUrls.PROTECTED.DASHBOARD); // Redirect to the dashboard page
@@ -205,7 +203,7 @@ export function OtpComponent() {
           </p>
         ) : (
           <button
-            onClick={handleResendOtp}
+            onClick={()=>handleResendOtp()}
             className="font-geist_mono font-medium text-blue-500 hover:underline"
             disabled={isLoading}
           >

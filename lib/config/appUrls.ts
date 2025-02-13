@@ -10,7 +10,7 @@ export const appUrls = Object.freeze({
     SIGN_IN: "/login",
     SIGN_IN_VERIFICATION: "/login-verification",
     OTP: "/otp",
-    passkey_verification: "/pass-key-verification",
+    PASSKEY_VALIDATION: "/pass-key-verification",
   },
 
   PROTECTED: {

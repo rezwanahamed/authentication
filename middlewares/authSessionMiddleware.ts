@@ -55,5 +55,4 @@ export const authSessionMiddlewareConfig = {
     appUrls.AUTH.PASSWORD,
     appUrls.AUTH.USER_ADDITIONAL_DETAILS,
   ],
-  handler: authSessionMiddleware,
 };

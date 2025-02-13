@@ -13,26 +13,33 @@ const pageOrder: PageOrder = {
   otp: 4,
 };
 
+const restrictedPaths = [
+  "login",
+  "dashboard",
+];
+
 export function registerMiddleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const currentPage = path.split("/")[1];
 
+
   // If accessing the register page, allow access
-  if (currentPage === "register") {
+  if (currentPage === "register" && !restrictedPaths.includes(currentPage)) {
     return NextResponse.next();
   }
 
   // Get the referer (previous page URL)
   const referer = request.headers.get("referer");
 
-  if (!referer) {
+  if (!referer && !restrictedPaths.includes(currentPage)) {
+
     // If no referer, redirect to register
     const redirectUrl = new URL("/register", request.url);
     return NextResponse.redirect(redirectUrl);
   }
 
   // Extract the previous page from referer
-  const previousPage = new URL(referer).pathname.split("/")[1];
+  const previousPage = referer ? new URL(referer).pathname.split("/")[1] : "";
 
   // Get the order numbers for current and previous pages
   const currentPageOrder = pageOrder[currentPage];
@@ -62,5 +69,4 @@ export const registerMiddlewareConfig = {
     appUrls.AUTH.USER_ADDITIONAL_DETAILS,
     appUrls.AUTH.PASSWORD,
   ],
-  handler: registerMiddleware,
 };

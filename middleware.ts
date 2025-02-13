@@ -1,22 +1,23 @@
 import { NextRequest } from "next/server";
+import { authSessionMiddleware } from "./middlewares/authSessionMiddleware";
+import { loginMiddleware } from "./middlewares/loginMiddleware";
 
-import { authSessionMiddlewareConfig } from "./middlewares/authSessionMiddleware";
-import { loginMiddlewareConfig } from "./middlewares/loginMiddleware";
-import { registerMiddlewareConfig } from "./middlewares/registerMiddleware";
-import { MiddlewareChain } from "./utils/middlewareChain";
+import { middlewarePipeline } from "./middlewares/middlewarePipeline";
+import { registerMiddleware } from "./middlewares/registerMiddleware";
 
-const middlewareChain = new MiddlewareChain();
-middlewareChain
-  .add(loginMiddlewareConfig)
-  .add(authSessionMiddlewareConfig)
-  .add(registerMiddlewareConfig);
+const middlewares = [
+  authSessionMiddleware,
+  registerMiddleware,
+  loginMiddleware,
+];
 
-export async function middleware(request: NextRequest) {
-  return middlewareChain.execute(request);
+export function middleware(request: NextRequest) {
+  return middlewarePipeline(request, middlewares);
 }
 
 // Configure which paths this middleware will run on (combined from both configs)
 export const config = {
-  matcher:
+  matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };

@@ -18,7 +18,7 @@ const pageOrder: PageOrder = {
 const restrictedPaths = [
   appUrls.AUTH.SIGN_IN,
   appUrls.AUTH.SIGN_IN_VERIFICATION,
-  appUrls.AUTH.passkey_verification,
+  appUrls.AUTH.PASSKEY_VALIDATION,
   appUrls.AUTH.OTP,
 ];
 
@@ -86,6 +86,5 @@ export async function loginMiddleware(request: NextRequest) {
 }
 
 export const loginMiddlewareConfig = {
-  matcher: restrictedPaths,
-  handler: loginMiddleware,
+  matcher: restrictedPaths
 };
