@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { authSessionMiddleware } from "./middlewares/authSessionMiddleware";
 import { loginMiddleware } from "./middlewares/loginMiddleware";
 
@@ -12,6 +12,11 @@ const middlewares = [
 ];
 
 export function middleware(request: NextRequest) {
+  // Explicitly skip middleware processing for the root path
+  if (request.nextUrl.pathname === "/") {
+    return NextResponse.next();
+  }
+
   return middlewarePipeline(request, middlewares);
 }
 
